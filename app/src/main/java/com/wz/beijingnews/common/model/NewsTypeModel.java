@@ -14,7 +14,7 @@ import retrofit2.Callback;
 
 public class NewsTypeModel {
 
-    public void getNewsType(Callback<NewsTypeBaseBean<NewsTypeDataBean>> callback){
+    public void getNewsType(Callback<NewsTypeBaseBean<NewsTypeDataBean<NewsTypeChildBean>>> callback){
         HttpManager manager = new HttpManager();
         ApiService apiService = manager.getRetrofit(manager.getOkHttpClient()).create(ApiService.class);
         apiService.getNewsType().enqueue(callback);

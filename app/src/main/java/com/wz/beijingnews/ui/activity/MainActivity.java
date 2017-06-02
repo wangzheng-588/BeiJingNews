@@ -16,10 +16,11 @@ import android.widget.RadioGroup;
 
 import com.nineoldandroids.view.ViewHelper;
 import com.wz.beijingnews.R;
+import com.wz.beijingnews.bean.NewsTypeChildBean;
 import com.wz.beijingnews.bean.NewsTypeDataBean;
 import com.wz.beijingnews.common.model.NewsTypeModel;
 import com.wz.beijingnews.presenter.contract.NewsTypeContract;
-import com.wz.beijingnews.presenter.contract.NewsTypePresenter;
+import com.wz.beijingnews.presenter.NewsTypePresenter;
 import com.wz.beijingnews.ui.adapter.LeftTitleAdapter;
 import com.wz.beijingnews.ui.fragment.InteractFragment;
 import com.wz.beijingnews.ui.fragment.MeFragment;
@@ -202,11 +203,11 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View{
     }
 
     @Override
-    public void showResult(List<NewsTypeDataBean> data) {
+    public void showResult(List<NewsTypeDataBean<NewsTypeChildBean>> data) {
         initTitle(data);
     }
 
-    private void initTitle(List<NewsTypeDataBean> data) {
+    private void initTitle(List<NewsTypeDataBean<NewsTypeChildBean>> data) {
         List<String> titles = new ArrayList<>(data.size());
         for (int i = 0; i < data.size(); i++) {
             String title = data.get(i).getTitle();

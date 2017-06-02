@@ -5,17 +5,13 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <TextView
-        android:text="news"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:tabIndicatorHeight="0dp"
-        app:tabMode="fixed"
+        app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/black"
         app:tabTextAppearance="@style/TabLayoutTextStyle">
 
