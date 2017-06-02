@@ -1,39 +1,45 @@
 package com.wz.beijingnews.ui.activity;
 
 import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.nineoldandroids.view.ViewHelper;
 import com.wz.beijingnews.R;
-import com.wz.beijingnews.common.utils.ToastUtil;
-import com.wz.beijingnews.ui.fragment.HomeFragment;
+import com.wz.beijingnews.bean.NewsTypeDataBean;
+import com.wz.beijingnews.common.model.NewsTypeModel;
+import com.wz.beijingnews.presenter.contract.NewsTypeContract;
+import com.wz.beijingnews.presenter.contract.NewsTypePresenter;
+import com.wz.beijingnews.ui.adapter.LeftTitleAdapter;
+import com.wz.beijingnews.ui.fragment.InteractFragment;
 import com.wz.beijingnews.ui.fragment.MeFragment;
+import com.wz.beijingnews.ui.fragment.NewsFragment;
+import com.wz.beijingnews.ui.fragment.PhotosFragment;
+import com.wz.beijingnews.ui.fragment.SpecialFragment;
 import com.wz.beijingnews.ui.fragment.VideoFragment;
+import com.wz.beijingnews.ui.fragment.VoteFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements NewsTypeContract.View{
 
 
     @BindView(R.id.iv_menu)
     ImageView mIvMenu;
-    @BindView(R.id.tab_layout)
-    TabLayout mTabLayout;
     @BindView(R.id.fl_main)
     FrameLayout mFlMain;
     @BindView(R.id.navigation_view)
@@ -48,11 +54,14 @@ public class MainActivity extends BaseActivity {
     RadioButton mRbMe;
     @BindView(R.id.rg_main)
     RadioGroup mRgMain;
+    @BindView(R.id.list_view)
+    ListView mListView;
 
     private boolean isOpen;
     private Fragment preFragment;
     private int mPosition;
     private ArrayList<Fragment> mFragments;
+    private List<Fragment> mNewsDetailFragments;
 
     @Override
     protected int setLayoutRedID() {
@@ -61,8 +70,54 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        NewsTypeModel model = new NewsTypeModel();
+        NewsTypePresenter newsTypePresenter = new NewsTypePresenter(model, this);
+        newsTypePresenter.requestDatas();
+
+        initNewsDetailFragment();
+
         initFragment();
 
+        initDrawerLayout();
+        initRidaoGroup();
+    }
+
+    private void initNewsDetailFragment() {
+        mNewsDetailFragments = new ArrayList<>();
+        mNewsDetailFragments.add(new NewsFragment());
+        mNewsDetailFragments.add(new SpecialFragment());
+        mNewsDetailFragments.add(new PhotosFragment());
+        mNewsDetailFragments.add(new InteractFragment());
+        mNewsDetailFragments.add(new VoteFragment());
+    }
+
+    private void initRidaoGroup() {
+        mRgMain.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+
+                switch (checkedId) {
+                    case R.id.rb_home:
+                        mPosition = 0;
+                        break;
+                    case R.id.rb_video:
+                        mPosition = 1;
+                        break;
+                    case R.id.rb_me:
+                        mPosition = 2;
+                        break;
+                }
+                Fragment fragment = mFragments.get(mPosition);
+                changeFragment(fragment);
+            }
+        });
+
+        mRgMain.check(R.id.rb_home);
+    }
+
+
+
+    private void initDrawerLayout() {
         mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -96,47 +151,11 @@ public class MainActivity extends BaseActivity {
 
             }
         });
-
-        mNavigationView.inflateMenu(R.menu.menu_left);
-
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.photos:
-                        ToastUtil.show(MainActivity.this, "组图");
-                        break;
-                }
-                return false;
-            }
-        });
-
-        mRgMain.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-
-                switch (checkedId){
-                    case R.id.rb_home:
-                        mPosition = 0;
-                        break;
-                    case R.id.rb_video:
-                        mPosition = 1;
-                        break;
-                    case R.id.rb_me:
-                        mPosition = 2;
-                        break;
-                }
-                Fragment fragment = mFragments.get(mPosition);
-                changeFragment(fragment);
-            }
-        });
-
-        mRgMain.check(R.id.rb_home);
     }
 
     private void initFragment() {
         mFragments = new ArrayList<>();
-        mFragments.add(new HomeFragment());
+        mFragments.add(new NewsFragment());
         mFragments.add(new VideoFragment());
         mFragments.add(new MeFragment());
     }
@@ -162,7 +181,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
     @OnClick(R.id.iv_menu)
     public void onViewClicked() {
         if (isOpen) {
@@ -170,5 +188,53 @@ public class MainActivity extends BaseActivity {
         } else {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
+    }
+
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void dismissLoading() {
+
+    }
+
+    @Override
+    public void showResult(List<NewsTypeDataBean> data) {
+        initTitle(data);
+    }
+
+    private void initTitle(List<NewsTypeDataBean> data) {
+        List<String> titles = new ArrayList<>(data.size());
+        for (int i = 0; i < data.size(); i++) {
+            String title = data.get(i).getTitle();
+            titles.add(title);
+        }
+        LeftTitleAdapter leftTitleAdapter = new LeftTitleAdapter(this, titles);
+        mListView.setAdapter(leftTitleAdapter);
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               changeNewsDetailFragment(position);
+            }
+        });
+    }
+
+    private void changeNewsDetailFragment(int position) {
+        Fragment fragment = mNewsDetailFragments.get(position);
+        changeFragment(fragment);
+    }
+
+    @Override
+    public void showNoData() {
+
+    }
+
+    @Override
+    public void showError() {
+
     }
 }

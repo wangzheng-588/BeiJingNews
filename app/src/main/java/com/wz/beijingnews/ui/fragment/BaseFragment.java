@@ -41,11 +41,14 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract int setLayoutResID();
 
+
+
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         if (mBind!=mBind.EMPTY){
             mBind.unbind();
         }
-        super.onDestroy();
+        super.onDestroyView();
     }
+
 }
