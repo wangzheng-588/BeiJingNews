@@ -1,8 +1,174 @@
 package com.wz.beijingnews.ui.activity;
 
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
-public class MainActivity extends AppCompatActivity {
+import com.nineoldandroids.view.ViewHelper;
+import com.wz.beijingnews.R;
+import com.wz.beijingnews.common.utils.ToastUtil;
+import com.wz.beijingnews.ui.fragment.HomeFragment;
+import com.wz.beijingnews.ui.fragment.MeFragment;
+import com.wz.beijingnews.ui.fragment.VideoFragment;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+
+public class MainActivity extends BaseActivity {
 
 
+    @BindView(R.id.iv_menu)
+    ImageView mIvMenu;
+    @BindView(R.id.tab_layout)
+    TabLayout mTabLayout;
+    @BindView(R.id.fl_main)
+    FrameLayout mFlMain;
+    @BindView(R.id.navigation_view)
+    NavigationView mNavigationView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.rb_home)
+    RadioButton mRbHome;
+    @BindView(R.id.rb_video)
+    RadioButton mRbVideo;
+    @BindView(R.id.rb_me)
+    RadioButton mRbMe;
+    @BindView(R.id.rg_main)
+    RadioGroup mRgMain;
+
+    private boolean isOpen;
+    private Fragment preFragment;
+    private int mPosition;
+    private ArrayList<Fragment> mFragments;
+
+    @Override
+    protected int setLayoutRedID() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void init() {
+        initFragment();
+
+        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                View mContent = mDrawerLayout.getChildAt(0);
+                View mMenu = drawerView;
+                float scale = 1 - slideOffset;
+                //改变DrawLayout侧栏透明度，若不需要效果可以不设置
+                ViewHelper.setAlpha(mMenu, 0.6f + 0.4f * (1 - scale));
+
+                ViewHelper.setTranslationX(mContent,
+                        mMenu.getMeasuredWidth() * (1 - scale));
+
+                ViewHelper.setPivotX(mContent, 0);
+                ViewHelper.setPivotY(mContent, mContent.getMeasuredHeight() / 2);
+
+                mContent.invalidate();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                isOpen = true;
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                isOpen = false;
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
+        mNavigationView.inflateMenu(R.menu.menu_left);
+
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.photos:
+                        ToastUtil.show(MainActivity.this, "组图");
+                        break;
+                }
+                return false;
+            }
+        });
+
+        mRgMain.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+
+                switch (checkedId){
+                    case R.id.rb_home:
+                        mPosition = 0;
+                        break;
+                    case R.id.rb_video:
+                        mPosition = 1;
+                        break;
+                    case R.id.rb_me:
+                        mPosition = 2;
+                        break;
+                }
+                Fragment fragment = mFragments.get(mPosition);
+                changeFragment(fragment);
+            }
+        });
+
+        mRgMain.check(R.id.rb_home);
+    }
+
+    private void initFragment() {
+        mFragments = new ArrayList<>();
+        mFragments.add(new HomeFragment());
+        mFragments.add(new VideoFragment());
+        mFragments.add(new MeFragment());
+    }
+
+    private void changeFragment(Fragment fragment) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (fragment != preFragment) {
+            if (fragment.isAdded()) {
+                if (preFragment != null) {
+                    ft.hide(preFragment);
+                }
+                ft.show(fragment);
+            } else {
+                if (preFragment != null) {
+                    ft.hide(preFragment);
+                }
+                ft.add(R.id.fl_main, fragment);
+            }
+        }
+        preFragment = fragment;
+        ft.commit();
+
+    }
+
+
+
+    @OnClick(R.id.iv_menu)
+    public void onViewClicked() {
+        if (isOpen) {
+            mDrawerLayout.closeDrawers();
+        } else {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+        }
+    }
 }
