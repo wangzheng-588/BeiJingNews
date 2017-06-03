@@ -9,7 +9,6 @@ import com.wz.beijingnews.bean.NewsTypeDataBean;
 import com.wz.beijingnews.bean.TopNewsBean;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Url;
 
@@ -26,10 +25,15 @@ public interface ApiService {
     @GET("static/api/news/categories.json")
     Observable<NewsTypeBaseBean<NewsTypeDataBean<NewsTypeChildBean>>> getNewsType();
 
-    @GET
+   /* @GET
     Call<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> getNewsDetail(@Url String url);
+*/
 
 
     @GET
-    Call<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> loadMoreNewsDetail(@Url String moreUrl);
+    Observable<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> getNewsDetail(@Url String url);
+
+
+    @GET
+    Observable<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> loadMoreNewsDetail(@Url String moreUrl);
 }

@@ -14,6 +14,7 @@ public interface NewsDetailContract {
     interface View extends BaseView{
         void showResult(NewsDataBean<NewsBean, TopNewsBean> data);
 
+
         void showNoData();
 
         void showError();

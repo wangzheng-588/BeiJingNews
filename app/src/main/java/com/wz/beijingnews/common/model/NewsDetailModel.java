@@ -7,7 +7,7 @@ import com.wz.beijingnews.bean.TopNewsBean;
 import com.wz.beijingnews.common.http.ApiService;
 import com.wz.beijingnews.common.http.HttpManager;
 
-import retrofit2.Callback;
+import io.reactivex.Observable;
 
 /**
  * Created by wz on 17-6-3.
@@ -15,15 +15,15 @@ import retrofit2.Callback;
 
 public class NewsDetailModel {
 
-    public void getNewsDetail(String url, Callback<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> callback){
+    public Observable<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> getNewsDetail(String url){
         HttpManager manager = new HttpManager();
         ApiService apiService = manager.getRetrofit(manager.getOkHttpClient()).create(ApiService.class);
-        apiService.getNewsDetail(url).enqueue(callback);
+        return apiService.getNewsDetail(url);
     }
 
-    public void loadMoreNewsDetail(String url, Callback<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> callback){
+    public Observable<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> loadMoreNewsDetail(String url){
         HttpManager manager = new HttpManager();
         ApiService apiService = manager.getRetrofit(manager.getOkHttpClient()).create(ApiService.class);
-        apiService.loadMoreNewsDetail(url).enqueue(callback);
+        return apiService.loadMoreNewsDetail(url);
     }
 }
