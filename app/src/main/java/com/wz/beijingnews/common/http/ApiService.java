@@ -24,4 +24,8 @@ public interface ApiService {
 
     @GET
     Call<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> getNewsDetail(@Url String url);
+
+
+    @GET
+    Call<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> loadMoreNewsDetail(@Url String moreUrl);
 }

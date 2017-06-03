@@ -20,4 +20,10 @@ public class NewsDetailModel {
         ApiService apiService = manager.getRetrofit(manager.getOkHttpClient()).create(ApiService.class);
         apiService.getNewsDetail(url).enqueue(callback);
     }
+
+    public void loadMoreNewsDetail(String url, Callback<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> callback){
+        HttpManager manager = new HttpManager();
+        ApiService apiService = manager.getRetrofit(manager.getOkHttpClient()).create(ApiService.class);
+        apiService.loadMoreNewsDetail(url).enqueue(callback);
+    }
 }

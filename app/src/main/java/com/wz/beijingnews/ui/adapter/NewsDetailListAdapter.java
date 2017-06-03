@@ -36,6 +36,11 @@ public class NewsDetailListAdapter extends RecyclerView.Adapter<NewsDetailListAd
         notifyItemRangeChanged(0,mNewsBeen.size());
     }
 
+    public void addNewsBeen(List<NewsBean> newsBeen){
+        mNewsBeen.addAll(newsBeen);
+        notifyItemRangeChanged(mNewsBeen.size(),newsBeen.size());
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(View.inflate(mContext, R.layout.item_news_detail_pager, null));

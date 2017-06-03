@@ -38,4 +38,20 @@ public class NewsDetailPresenter extends BasePresenter<NewsDetailModel,NewsDetai
             }
         });
     }
+
+    public void loadMoreDatas(String moreUrl){
+        mModel.loadMoreNewsDetail(moreUrl, new Callback<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>>() {
+            @Override
+            public void onResponse(Call<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>> call, Response<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>> response) {
+                mView.showLoadMoreData(response.body().getData());
+                mView.dismissLoading();
+            }
+
+            @Override
+            public void onFailure(Call<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>> call, Throwable t) {
+                mView.showError();
+                mView.dismissLoading();
+            }
+        });
+    }
 }

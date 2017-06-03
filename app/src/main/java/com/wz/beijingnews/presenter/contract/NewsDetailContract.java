@@ -17,6 +17,8 @@ public interface NewsDetailContract {
         void showNoData();
 
         void showError();
+
+        void showLoadMoreData(NewsDataBean<NewsBean, TopNewsBean> data);
     }
 
 }
