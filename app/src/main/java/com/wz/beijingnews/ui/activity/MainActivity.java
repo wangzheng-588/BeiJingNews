@@ -73,7 +73,7 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View 
         mNewsFragment = new NewsFragment();
         NewsTypeModel model = new NewsTypeModel();
         NewsTypePresenter newsTypePresenter = new NewsTypePresenter(model, this);
-        newsTypePresenter.requestDatas();
+        newsTypePresenter.getLeftMenuTitle();
 
         initNewsDetailFragment();
 
@@ -209,7 +209,12 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View 
 
     @Override
     public void showResult(List<NewsTypeDataBean<NewsTypeChildBean>> data) {
-        initLeftMenuTitle(data);
+
+    }
+
+    @Override
+    public void showNewsTypeTitle(List<NewsTypeChildBean> value) {
+
     }
 
     /**
@@ -217,10 +222,10 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View 
      *
      * @param data
      */
-    private void initLeftMenuTitle(List<NewsTypeDataBean<NewsTypeChildBean>> data) {
+    private void initLeftMenuTitle(List<String> data) {
         List<String> titles = new ArrayList<>(data.size());
         for (int i = 0; i < data.size(); i++) {
-            String title = data.get(i).getTitle();
+            String title = data.get(i);
             titles.add(title);
         }
         final LeftTitleAdapter leftTitleAdapter = new LeftTitleAdapter(this, titles);
@@ -251,5 +256,10 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View 
     @Override
     public void showError() {
 
+    }
+
+    @Override
+    public void showLeftMenuTitle(List<String> value) {
+        initLeftMenuTitle(value);
     }
 }

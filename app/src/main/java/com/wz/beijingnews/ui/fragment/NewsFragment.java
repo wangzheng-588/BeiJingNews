@@ -38,7 +38,8 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
     protected void initData() {
         NewsTypeModel model = new NewsTypeModel();
         NewsTypePresenter newsTypePresenter = new NewsTypePresenter(model, this);
-        newsTypePresenter.requestDatas();
+//        newsTypePresenter.requestDatas();
+        newsTypePresenter.getNewsTypeTitle();
 
     }
 
@@ -55,29 +56,34 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
 
     @Override
     public void showResult(List<NewsTypeDataBean<NewsTypeChildBean>> data) {
-        initNewsDetailFragment(data);
+//        initNewsDetailFragment(data);
     }
 
-    private void initNewsDetailFragment(List<NewsTypeDataBean<NewsTypeChildBean>> data) {
-        List children = data.get(0).getChildren();
-        List<Fragment> fragments = new ArrayList<>(data.size());
-        List<String> strings = new ArrayList<>(data.size());
-        for (int i = 0; i < children.size(); i++) {
-            NewsTypeChildBean newsTypeChildBean = (NewsTypeChildBean) children.get(i);
+    @Override
+    public void showNewsTypeTitle(List<NewsTypeChildBean> value) {
+        initNewsDetailFragment(value);
+    }
+
+    private void initNewsDetailFragment(List<NewsTypeChildBean> value) {
+
+        List<Fragment> fragments = new ArrayList<>(value.size());
+        List<String> strings = new ArrayList<>(value.size());
+        for (int i = 0; i < value.size(); i++) {
+            NewsTypeChildBean newsTypeChildBean =  value.get(i);
             String title = newsTypeChildBean.getTitle();
             strings.add(title);
             if (i==0){
 
-                fragments.add(NewsDetailListFragment.newInstance(((NewsTypeChildBean) children.get(i)).getUrl(),false));
+                fragments.add(NewsDetailListFragment.newInstance(value.get(i).getUrl(),false));
             } else {
-                fragments.add(NewsDetailListFragment.newInstance(((NewsTypeChildBean) children.get(i)).getUrl(),true));
+                fragments.add(NewsDetailListFragment.newInstance(value.get(i).getUrl(),true));
 
             }
         }
 
         mAdapter = new NewsDetailFragmentAdapter(getChildFragmentManager(), fragments, strings);
         mViewPager.setAdapter(mAdapter);
-        mViewPager.setOffscreenPageLimit(children.size());
+        mViewPager.setOffscreenPageLimit(value.size());
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
@@ -88,6 +94,11 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
 
     @Override
     public void showError() {
+
+    }
+
+    @Override
+    public void showLeftMenuTitle(List<String> value) {
 
     }
 }

@@ -14,9 +14,12 @@ public interface NewsTypeContract {
 
     interface View extends BaseView{
         void showResult(List<NewsTypeDataBean<NewsTypeChildBean>> data);
+       void showNewsTypeTitle(List<NewsTypeChildBean> value);
 
         void showNoData();
 
         void showError();
+
+        void showLeftMenuTitle(List<String> value);
     }
 }
