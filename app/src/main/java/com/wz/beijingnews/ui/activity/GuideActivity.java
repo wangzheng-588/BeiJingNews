@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import com.wz.beijingnews.R;
 import com.wz.beijingnews.common.utils.DisplayUtil;
 import com.wz.beijingnews.common.utils.SPUtil;
-import com.wz.beijingnews.ui.GuideAdapter;
+import com.wz.beijingnews.ui.adapter.GuideAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

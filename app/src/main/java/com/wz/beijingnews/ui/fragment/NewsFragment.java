@@ -66,11 +66,18 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
             NewsTypeChildBean newsTypeChildBean = (NewsTypeChildBean) children.get(i);
             String title = newsTypeChildBean.getTitle();
             strings.add(title);
-            fragments.add(NewsDetailListFragment.newInstance(((NewsTypeChildBean) children.get(i)).getUrl()));
+            if (i==0){
+
+                fragments.add(NewsDetailListFragment.newInstance(((NewsTypeChildBean) children.get(i)).getUrl(),false));
+            } else {
+                fragments.add(NewsDetailListFragment.newInstance(((NewsTypeChildBean) children.get(i)).getUrl(),true));
+
+            }
         }
 
         mAdapter = new NewsDetailFragmentAdapter(getChildFragmentManager(), fragments, strings);
         mViewPager.setAdapter(mAdapter);
+        mViewPager.setOffscreenPageLimit(children.size());
         mTabLayout.setupWithViewPager(mViewPager);
     }
 

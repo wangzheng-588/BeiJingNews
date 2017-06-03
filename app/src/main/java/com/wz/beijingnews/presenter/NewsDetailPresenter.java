@@ -23,12 +23,15 @@ public class NewsDetailPresenter extends BasePresenter<NewsDetailModel,NewsDetai
     }
 
     public void requestDatas(String url){
+        mView.showLoading();
         mModel.getNewsDetail(url, new Callback<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>>() {
             @Override
             public void onResponse(Call<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>> call, Response<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>> response) {
                 if (response.isSuccessful()){
                     NewsDataBean<NewsBean, TopNewsBean> data = response.body().getData();
                     mView.showResult(data);
+                } else {
+                    mView.showError();
                 }
 
                 mView.dismissLoading();
@@ -43,6 +46,7 @@ public class NewsDetailPresenter extends BasePresenter<NewsDetailModel,NewsDetai
     }
 
     public void loadMoreDatas(String moreUrl){
+        mView.showLoading();
         mModel.loadMoreNewsDetail(moreUrl, new Callback<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>>() {
             @Override
             public void onResponse(Call<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>> call, Response<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>> response) {

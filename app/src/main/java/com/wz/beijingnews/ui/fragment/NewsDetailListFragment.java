@@ -24,24 +24,28 @@ import butterknife.BindView;
  * 新闻列表详细信息页面
  */
 
-public class NewsDetailListFragment extends BaseFragment implements NewsDetailContract.View {
+public class NewsDetailListFragment extends ProgressFragment implements NewsDetailContract.View {
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
 
     public static final String ARGUMENT = "argument";
+    public static final String ISLAZYLOAD = "islazyload";
+
     @BindView(R.id.material_refresh_layout)
     MaterialRefreshLayout mMaterialRefreshLayout;
     private String mUrl;
     private NewsDetailListAdapter mAdapter;
     private String mMoreUrl;
     private NewsDetailPresenter mPresenter;
+    private boolean isLazyLoad = false;
 
-    public static NewsDetailListFragment newInstance(String argument) {
+    public static NewsDetailListFragment newInstance(String argument,boolean isLazyLoad) {
 
         Bundle args = new Bundle();
         args.putString(ARGUMENT, argument);
+        args.putBoolean(ISLAZYLOAD,isLazyLoad);
         NewsDetailListFragment fragment = new NewsDetailListFragment();
         fragment.setArguments(args);
         return fragment;
@@ -53,6 +57,7 @@ public class NewsDetailListFragment extends BaseFragment implements NewsDetailCo
 
         Bundle bundle = getArguments();
         if (bundle != null) {
+            isLazyLoad = bundle.getBoolean(ISLAZYLOAD);
             mUrl = bundle.getString(ARGUMENT);
             if (!TextUtils.isEmpty(mUrl)){
                 mUrl = mUrl.substring(1);
@@ -61,17 +66,14 @@ public class NewsDetailListFragment extends BaseFragment implements NewsDetailCo
 
     }
 
-    @Override
-    protected int setLayoutResID() {
-        return R.layout.fragment_news_detail;
-    }
-
 
     @Override
-    protected void initData() {
+    protected void init() {
         NewsDetailModel newsDetailModel = new NewsDetailModel();
         mPresenter = new NewsDetailPresenter(newsDetailModel, this);
-        mPresenter.requestDatas(mUrl);
+        if (!isLazyLoad){
+            mPresenter.requestDatas(mUrl);
+        }
 
         mAdapter = new NewsDetailListAdapter(getActivity());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -79,6 +81,11 @@ public class NewsDetailListFragment extends BaseFragment implements NewsDetailCo
 
         mMaterialRefreshLayout.setLoadMore(true);
         initListener();
+    }
+
+    @Override
+    public int setLayout() {
+        return R.layout.fragment_news_detail;
     }
 
     private void initListener() {
@@ -101,11 +108,12 @@ public class NewsDetailListFragment extends BaseFragment implements NewsDetailCo
 
     @Override
     public void showLoading() {
-
+        showProgress();
     }
 
     @Override
     public void dismissLoading() {
+        showContentView();
         mMaterialRefreshLayout.finishRefreshLoadMore();
         mMaterialRefreshLayout.finishRefresh();
     }
@@ -118,11 +126,12 @@ public class NewsDetailListFragment extends BaseFragment implements NewsDetailCo
 
     @Override
     public void showNoData() {
-
+        showEmptyView();
     }
 
     @Override
     public void showError() {
+        showEmptyView("未知错误");
         mMaterialRefreshLayout.finishRefreshLoadMore();
         mMaterialRefreshLayout.finishRefresh();
 
@@ -134,4 +143,10 @@ public class NewsDetailListFragment extends BaseFragment implements NewsDetailCo
         mAdapter.addNewsBeen(data.getNews());
     }
 
+    @Override
+    protected void onFragmentFirstVisible() {
+        if (isLazyLoad){
+            mPresenter.requestDatas(mUrl);
+        }
+    }
 }

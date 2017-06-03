@@ -51,7 +51,7 @@ public class NewsDetailListAdapter extends RecyclerView.Adapter<NewsDetailListAd
         NewsBean newsBean = mNewsBeen.get(position);
         holder.mTvTitle.setText(newsBean.getTitle());
         holder.mTvTime.setText(newsBean.getPubdate());
-        Glide.with(mContext).load(Constacts.BASE_URL+newsBean.getListimage()).into(holder.mIvIcon);
+        Glide.with(mContext).load(Constacts.BASE_URL+newsBean.getListimage()).error(R.mipmap.news_pic_default).into(holder.mIvIcon);
     }
 
     @Override
