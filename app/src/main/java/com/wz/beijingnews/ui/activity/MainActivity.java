@@ -16,14 +16,11 @@ import android.widget.RadioGroup;
 
 import com.nineoldandroids.view.ViewHelper;
 import com.wz.beijingnews.R;
-import com.wz.beijingnews.bean.NewsTypeChildBean;
-import com.wz.beijingnews.bean.NewsTypeDataBean;
 import com.wz.beijingnews.common.model.NewsTypeModel;
-import com.wz.beijingnews.presenter.NewsTypePresenter;
-import com.wz.beijingnews.presenter.contract.NewsTypeContract;
+import com.wz.beijingnews.presenter.LeftMenuPresenter;
+import com.wz.beijingnews.presenter.contract.LeftMenuContract;
 import com.wz.beijingnews.ui.adapter.LeftTitleAdapter;
 import com.wz.beijingnews.ui.fragment.FragmentFactory;
-import com.wz.beijingnews.ui.fragment.NewsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity implements NewsTypeContract.View {
+public class MainActivity extends BaseActivity implements LeftMenuContract.View {
 
 
     @BindView(R.id.iv_menu)
@@ -60,7 +57,8 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View 
     private int mPosition;
     private ArrayList<Fragment> mFragments;
     private List<Fragment> mNewsDetailFragments;
-    private NewsFragment mNewsFragment;
+
+    private LeftMenuPresenter mPresenter;
 
     @Override
     protected int setLayoutRedID() {
@@ -70,10 +68,11 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View 
     @Override
     protected void init() {
         //初使化第一个页面newsFragment
-        mNewsFragment = new NewsFragment();
+
         NewsTypeModel model = new NewsTypeModel();
-        NewsTypePresenter newsTypePresenter = new NewsTypePresenter(model, this);
-        newsTypePresenter.getLeftMenuTitle();
+//        NewsTypePresenter newsTypePresenter = new NewsTypePresenter(model, this);
+        mPresenter = new LeftMenuPresenter(model, this);
+        mPresenter.getLeftMenuTitle();
 
         initNewsDetailFragment();
 
@@ -197,25 +196,6 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View 
     }
 
 
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void dismissLoading() {
-
-    }
-
-    @Override
-    public void showResult(List<NewsTypeDataBean<NewsTypeChildBean>> data) {
-
-    }
-
-    @Override
-    public void showNewsTypeTitle(List<NewsTypeChildBean> value) {
-
-    }
 
     /**
      * 初使化左侧菜单标题
@@ -248,10 +228,6 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View 
         changeFragment(fragment);
     }
 
-    @Override
-    public void showNoData() {
-
-    }
 
     @Override
     public void showError() {

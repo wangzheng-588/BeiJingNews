@@ -6,7 +6,6 @@ import android.support.v4.view.ViewPager;
 
 import com.wz.beijingnews.R;
 import com.wz.beijingnews.bean.NewsTypeChildBean;
-import com.wz.beijingnews.bean.NewsTypeDataBean;
 import com.wz.beijingnews.common.model.NewsTypeModel;
 import com.wz.beijingnews.presenter.NewsTypePresenter;
 import com.wz.beijingnews.presenter.contract.NewsTypeContract;
@@ -54,10 +53,6 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
 
     }
 
-    @Override
-    public void showResult(List<NewsTypeDataBean<NewsTypeChildBean>> data) {
-//        initNewsDetailFragment(data);
-    }
 
     @Override
     public void showNewsTypeTitle(List<NewsTypeChildBean> value) {
@@ -87,10 +82,6 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    @Override
-    public void showNoData() {
-
-    }
 
     @Override
     public void showError() {

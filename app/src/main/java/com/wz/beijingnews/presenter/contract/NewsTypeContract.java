@@ -1,7 +1,6 @@
 package com.wz.beijingnews.presenter.contract;
 
 import com.wz.beijingnews.bean.NewsTypeChildBean;
-import com.wz.beijingnews.bean.NewsTypeDataBean;
 import com.wz.beijingnews.ui.BaseView;
 
 import java.util.List;
@@ -13,13 +12,12 @@ import java.util.List;
 public interface NewsTypeContract {
 
     interface View extends BaseView{
-        void showResult(List<NewsTypeDataBean<NewsTypeChildBean>> data);
        void showNewsTypeTitle(List<NewsTypeChildBean> value);
-
-        void showNoData();
 
         void showError();
 
         void showLeftMenuTitle(List<String> value);
+        void showLoading();
+        void dismissLoading();
     }
 }

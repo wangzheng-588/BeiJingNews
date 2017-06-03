@@ -6,6 +6,5 @@ package com.wz.beijingnews.ui;
 
 public interface BaseView {
 
-    void showLoading();
-    void dismissLoading();
+
 }
