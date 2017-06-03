@@ -10,9 +10,8 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:tabIndicatorHeight="0dp"
         app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/black"
+        app:tabSelectedTextColor="@color/material_red"
         app:tabTextAppearance="@style/TabLayoutTextStyle">
 
     </android.support.design.widget.TabLayout>

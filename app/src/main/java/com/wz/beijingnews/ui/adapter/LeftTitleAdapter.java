@@ -18,6 +18,7 @@ public class LeftTitleAdapter extends BaseAdapter {
 
     private final List<String> mStrings;
     private final Context mContext;
+    private int prePosition;
 
     public LeftTitleAdapter(Context context, List<String> strings) {
         this.mContext = context;
@@ -41,6 +42,7 @@ public class LeftTitleAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         ViewHolder holder = null;
         if (convertView==null){
             convertView = View.inflate(mContext, R.layout.list_item_left_title,null);
@@ -52,7 +54,18 @@ public class LeftTitleAdapter extends BaseAdapter {
         }
 
         holder.mTvTitle.setText(mStrings.get(position));
+
+        if (prePosition==position){
+            holder.mTvTitle.setEnabled(true);
+        } else {
+            holder.mTvTitle.setEnabled(false);
+        }
+
         return convertView;
+    }
+
+    public void setPosition(int prePosition) {
+        this.prePosition = prePosition;
     }
 
     static class ViewHolder{

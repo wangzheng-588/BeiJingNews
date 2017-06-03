@@ -30,11 +30,14 @@ public class NewsDetailPresenter extends BasePresenter<NewsDetailModel,NewsDetai
                     NewsDataBean<NewsBean, TopNewsBean> data = response.body().getData();
                     mView.showResult(data);
                 }
+
+                mView.dismissLoading();
             }
 
             @Override
             public void onFailure(Call<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>> call, Throwable t) {
                 mView.showError();
+                mView.dismissLoading();
             }
         });
     }

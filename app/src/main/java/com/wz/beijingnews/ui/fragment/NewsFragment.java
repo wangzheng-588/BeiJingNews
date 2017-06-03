@@ -66,7 +66,6 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
             NewsTypeChildBean newsTypeChildBean = (NewsTypeChildBean) children.get(i);
             String title = newsTypeChildBean.getTitle();
             strings.add(title);
-            //fragments.add(new NewsDetailListFragment());
             fragments.add(NewsDetailListFragment.newInstance(((NewsTypeChildBean) children.get(i)).getUrl()));
         }
 

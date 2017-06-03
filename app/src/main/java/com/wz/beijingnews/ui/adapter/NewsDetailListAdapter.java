@@ -59,7 +59,7 @@ public class NewsDetailListAdapter extends RecyclerView.Adapter<NewsDetailListAd
         return mNewsBeen == null ? 0 : mNewsBeen.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.iv_icon)
         ImageView mIvIcon;
@@ -69,7 +69,7 @@ public class NewsDetailListAdapter extends RecyclerView.Adapter<NewsDetailListAd
         TextView mTvTime;
         @BindView(R.id.icon_news_comment_num)
         ImageView mIconNewsCommentNum;
-        public ViewHolder(View itemView) {
+         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }

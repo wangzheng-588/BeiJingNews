@@ -19,16 +19,11 @@ import com.wz.beijingnews.R;
 import com.wz.beijingnews.bean.NewsTypeChildBean;
 import com.wz.beijingnews.bean.NewsTypeDataBean;
 import com.wz.beijingnews.common.model.NewsTypeModel;
-import com.wz.beijingnews.presenter.contract.NewsTypeContract;
 import com.wz.beijingnews.presenter.NewsTypePresenter;
+import com.wz.beijingnews.presenter.contract.NewsTypeContract;
 import com.wz.beijingnews.ui.adapter.LeftTitleAdapter;
-import com.wz.beijingnews.ui.fragment.InteractFragment;
-import com.wz.beijingnews.ui.fragment.MeFragment;
+import com.wz.beijingnews.ui.fragment.FragmentFactory;
 import com.wz.beijingnews.ui.fragment.NewsFragment;
-import com.wz.beijingnews.ui.fragment.PhotosFragment;
-import com.wz.beijingnews.ui.fragment.SpecialFragment;
-import com.wz.beijingnews.ui.fragment.VideoFragment;
-import com.wz.beijingnews.ui.fragment.VoteFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +31,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity implements NewsTypeContract.View{
+public class MainActivity extends BaseActivity implements NewsTypeContract.View {
 
 
     @BindView(R.id.iv_menu)
@@ -58,11 +53,14 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View{
     @BindView(R.id.list_view)
     ListView mListView;
 
+    private int prePosition;
+
     private boolean isOpen;
     private Fragment preFragment;
     private int mPosition;
     private ArrayList<Fragment> mFragments;
     private List<Fragment> mNewsDetailFragments;
+    private NewsFragment mNewsFragment;
 
     @Override
     protected int setLayoutRedID() {
@@ -71,6 +69,8 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View{
 
     @Override
     protected void init() {
+        //初使化第一个页面newsFragment
+        mNewsFragment = new NewsFragment();
         NewsTypeModel model = new NewsTypeModel();
         NewsTypePresenter newsTypePresenter = new NewsTypePresenter(model, this);
         newsTypePresenter.requestDatas();
@@ -85,11 +85,11 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View{
 
     private void initNewsDetailFragment() {
         mNewsDetailFragments = new ArrayList<>();
-        mNewsDetailFragments.add(new NewsFragment());
-        mNewsDetailFragments.add(new SpecialFragment());
-        mNewsDetailFragments.add(new PhotosFragment());
-        mNewsDetailFragments.add(new InteractFragment());
-        mNewsDetailFragments.add(new VoteFragment());
+        mNewsDetailFragments.add(FragmentFactory.createFragment(0));
+        mNewsDetailFragments.add(FragmentFactory.createFragment(3));
+        mNewsDetailFragments.add(FragmentFactory.createFragment(4));
+        mNewsDetailFragments.add(FragmentFactory.createFragment(5));
+        mNewsDetailFragments.add(FragmentFactory.createFragment(6));
     }
 
     private void initRidaoGroup() {
@@ -121,7 +121,6 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View{
 
         mRgMain.check(R.id.rb_home);
     }
-
 
 
     private void initDrawerLayout() {
@@ -162,9 +161,9 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View{
 
     private void initFragment() {
         mFragments = new ArrayList<>();
-        mFragments.add(new NewsFragment());
-        mFragments.add(new VideoFragment());
-        mFragments.add(new MeFragment());
+        mFragments.add(FragmentFactory.createFragment(0));
+        mFragments.add(FragmentFactory.createFragment(1));
+        mFragments.add(FragmentFactory.createFragment(2));
     }
 
     private void changeFragment(Fragment fragment) {
@@ -210,24 +209,33 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View{
 
     @Override
     public void showResult(List<NewsTypeDataBean<NewsTypeChildBean>> data) {
-        initTitle(data);
+        initLeftMenuTitle(data);
     }
 
-    private void initTitle(List<NewsTypeDataBean<NewsTypeChildBean>> data) {
+    /**
+     * 初使化左侧菜单标题
+     *
+     * @param data
+     */
+    private void initLeftMenuTitle(List<NewsTypeDataBean<NewsTypeChildBean>> data) {
         List<String> titles = new ArrayList<>(data.size());
         for (int i = 0; i < data.size(); i++) {
             String title = data.get(i).getTitle();
             titles.add(title);
         }
-        LeftTitleAdapter leftTitleAdapter = new LeftTitleAdapter(this, titles);
+        final LeftTitleAdapter leftTitleAdapter = new LeftTitleAdapter(this, titles);
         mListView.setAdapter(leftTitleAdapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               changeNewsDetailFragment(position);
+                changeNewsDetailFragment(position);
+                prePosition = position;
+                leftTitleAdapter.setPosition(prePosition);
+                leftTitleAdapter.notifyDataSetChanged();
             }
         });
+
     }
 
     private void changeNewsDetailFragment(int position) {

@@ -18,7 +18,6 @@ import com.wz.beijingnews.presenter.contract.NewsDetailContract;
 import com.wz.beijingnews.ui.adapter.NewsDetailListAdapter;
 
 import butterknife.BindView;
-import butterknife.Unbinder;
 
 /**
  * Created by wz on 17-6-2.
@@ -34,7 +33,6 @@ public class NewsDetailListFragment extends BaseFragment implements NewsDetailCo
     public static final String ARGUMENT = "argument";
     @BindView(R.id.material_refresh_layout)
     MaterialRefreshLayout mMaterialRefreshLayout;
-    Unbinder unbinder;
     private String mUrl;
     private NewsDetailListAdapter mAdapter;
     private String mMoreUrl;
@@ -56,7 +54,9 @@ public class NewsDetailListFragment extends BaseFragment implements NewsDetailCo
         Bundle bundle = getArguments();
         if (bundle != null) {
             mUrl = bundle.getString(ARGUMENT);
-            mUrl = mUrl.substring(1);
+            if (!TextUtils.isEmpty(mUrl)){
+                mUrl = mUrl.substring(1);
+            }
         }
 
     }
@@ -85,7 +85,7 @@ public class NewsDetailListFragment extends BaseFragment implements NewsDetailCo
         mMaterialRefreshLayout.setMaterialRefreshListener(new MaterialRefreshListener() {
             @Override
             public void onRefresh(MaterialRefreshLayout materialRefreshLayout) {
-
+                mPresenter.requestDatas(mUrl);
             }
 
             @Override
@@ -107,6 +107,7 @@ public class NewsDetailListFragment extends BaseFragment implements NewsDetailCo
     @Override
     public void dismissLoading() {
         mMaterialRefreshLayout.finishRefreshLoadMore();
+        mMaterialRefreshLayout.finishRefresh();
     }
 
     @Override
@@ -123,6 +124,7 @@ public class NewsDetailListFragment extends BaseFragment implements NewsDetailCo
     @Override
     public void showError() {
         mMaterialRefreshLayout.finishRefreshLoadMore();
+        mMaterialRefreshLayout.finishRefresh();
 
     }
 
