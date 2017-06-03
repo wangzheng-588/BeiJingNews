@@ -99,13 +99,19 @@ public class MainActivity extends BaseActivity implements NewsTypeContract.View{
 
                 switch (checkedId) {
                     case R.id.rb_home:
+                        mIvMenu.setVisibility(View.VISIBLE);
+                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                         mPosition = 0;
                         break;
                     case R.id.rb_video:
+                        mIvMenu.setVisibility(View.GONE);
+                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                         mPosition = 1;
                         break;
                     case R.id.rb_me:
                         mPosition = 2;
+                        mIvMenu.setVisibility(View.GONE);
+                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                         break;
                 }
                 Fragment fragment = mFragments.get(mPosition);

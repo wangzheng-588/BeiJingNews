@@ -8,15 +8,14 @@ import com.wz.beijingnews.R;
 import com.wz.beijingnews.bean.NewsTypeChildBean;
 import com.wz.beijingnews.bean.NewsTypeDataBean;
 import com.wz.beijingnews.common.model.NewsTypeModel;
-import com.wz.beijingnews.presenter.contract.NewsTypeContract;
 import com.wz.beijingnews.presenter.NewsTypePresenter;
-import com.wz.beijingnews.ui.adapter.NewsDetailAdapter;
+import com.wz.beijingnews.presenter.contract.NewsTypeContract;
+import com.wz.beijingnews.ui.adapter.NewsDetailFragmentAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.Unbinder;
 
 /**
  * Created by wz on 17-6-2.
@@ -28,7 +27,7 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
     TabLayout mTabLayout;
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
-    Unbinder unbinder;
+    private NewsDetailFragmentAdapter mAdapter;
 
     @Override
     protected int setLayoutResID() {
@@ -41,13 +40,6 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
         NewsTypePresenter newsTypePresenter = new NewsTypePresenter(model, this);
         newsTypePresenter.requestDatas();
 
-    }
-
-
-    private void initFragment(List<Fragment> fragments, List<String> titles) {
-        NewsDetailAdapter adapter = new NewsDetailAdapter(getChildFragmentManager(), fragments, titles);
-        mViewPager.setAdapter(adapter);
-        mTabLayout.setupWithViewPager(mViewPager);
     }
 
 
@@ -74,11 +66,12 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
             NewsTypeChildBean newsTypeChildBean = (NewsTypeChildBean) children.get(i);
             String title = newsTypeChildBean.getTitle();
             strings.add(title);
-            fragments.add(new NewsDetailFragment());
+            //fragments.add(new NewsDetailListFragment());
+            fragments.add(NewsDetailListFragment.newInstance(((NewsTypeChildBean) children.get(i)).getUrl()));
         }
 
-        NewsDetailAdapter adapter = new NewsDetailAdapter(getChildFragmentManager(), fragments, strings);
-        mViewPager.setAdapter(adapter);
+        mAdapter = new NewsDetailFragmentAdapter(getChildFragmentManager(), fragments, strings);
+        mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
