@@ -9,6 +9,8 @@ import com.wz.beijingnews.presenter.contract.LeftMenuContract;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -24,6 +26,9 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class LeftMenuPresenter extends BasePresenter<NewsTypeModel,LeftMenuContract.View>{
+
+
+    @Inject
     public LeftMenuPresenter(NewsTypeModel model, LeftMenuContract.View view) {
         super(model, view);
     }

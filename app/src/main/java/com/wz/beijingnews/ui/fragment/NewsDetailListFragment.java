@@ -8,14 +8,20 @@ import android.text.TextUtils;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
+import com.wz.beijingnews.AppApplication;
 import com.wz.beijingnews.R;
 import com.wz.beijingnews.bean.NewsBean;
 import com.wz.beijingnews.bean.NewsDataBean;
 import com.wz.beijingnews.bean.TopNewsBean;
 import com.wz.beijingnews.common.model.NewsDetailModel;
+import com.wz.beijingnews.di.component.AppComponent;
+import com.wz.beijingnews.di.component.DaggerNewsDetailListComponent;
+import com.wz.beijingnews.di.module.NewsDetailListModule;
 import com.wz.beijingnews.presenter.NewsDetailPresenter;
 import com.wz.beijingnews.presenter.contract.NewsDetailContract;
 import com.wz.beijingnews.ui.adapter.NewsDetailListAdapter;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -38,14 +44,18 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
     private String mUrl;
     private NewsDetailListAdapter mAdapter;
     private String mMoreUrl;
-    private NewsDetailPresenter mPresenter;
     private boolean isLazyLoad = false;
 
-    public static NewsDetailListFragment newInstance(String argument,boolean isLazyLoad) {
+    @Inject
+    NewsDetailPresenter mPresenter;
+    @Inject
+     NewsDetailModel mNewsDetailModel;
+
+    public static NewsDetailListFragment newInstance(String argument, boolean isLazyLoad) {
 
         Bundle args = new Bundle();
         args.putString(ARGUMENT, argument);
-        args.putBoolean(ISLAZYLOAD,isLazyLoad);
+        args.putBoolean(ISLAZYLOAD, isLazyLoad);
         NewsDetailListFragment fragment = new NewsDetailListFragment();
         fragment.setArguments(args);
         return fragment;
@@ -59,7 +69,7 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
         if (bundle != null) {
             isLazyLoad = bundle.getBoolean(ISLAZYLOAD);
             mUrl = bundle.getString(ARGUMENT);
-            if (!TextUtils.isEmpty(mUrl)){
+            if (!TextUtils.isEmpty(mUrl)) {
                 mUrl = mUrl.substring(1);
             }
         }
@@ -69,9 +79,11 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
 
     @Override
     protected void init() {
-        NewsDetailModel newsDetailModel = new NewsDetailModel();
-        mPresenter = new NewsDetailPresenter(newsDetailModel, this);
-        if (!isLazyLoad){
+        AppComponent appComponent = ((AppApplication)(getActivity().getApplication())).getAppComponent();
+        DaggerNewsDetailListComponent.builder().appComponent(appComponent)
+                .newsDetailListModule(new NewsDetailListModule(this))
+                .build().inject(this);
+        if (!isLazyLoad) {
             mPresenter.requestDatas(mUrl);
         }
 
@@ -97,7 +109,7 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
 
             @Override
             public void onRefreshLoadMore(MaterialRefreshLayout materialRefreshLayout) {
-                if (!TextUtils.isEmpty(mMoreUrl)){
+                if (!TextUtils.isEmpty(mMoreUrl)) {
                     mPresenter.loadMoreDatas(mMoreUrl);
                 }
 
@@ -145,7 +157,7 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
 
     @Override
     protected void onFragmentFirstVisible() {
-        if (isLazyLoad){
+        if (isLazyLoad) {
             mPresenter.requestDatas(mUrl);
         }
     }

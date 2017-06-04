@@ -15,8 +15,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.nineoldandroids.view.ViewHelper;
+import com.wz.beijingnews.AppApplication;
 import com.wz.beijingnews.R;
 import com.wz.beijingnews.common.model.NewsTypeModel;
+import com.wz.beijingnews.di.component.AppComponent;
+import com.wz.beijingnews.di.component.DaggerLeftMenuComponent;
+import com.wz.beijingnews.di.module.LeftMenuModule;
 import com.wz.beijingnews.presenter.LeftMenuPresenter;
 import com.wz.beijingnews.presenter.contract.LeftMenuContract;
 import com.wz.beijingnews.ui.adapter.LeftTitleAdapter;
@@ -24,6 +28,8 @@ import com.wz.beijingnews.ui.fragment.FragmentFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -58,7 +64,10 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
     private ArrayList<Fragment> mFragments;
     private List<Fragment> mNewsDetailFragments;
 
-    private LeftMenuPresenter mPresenter;
+    @Inject
+     LeftMenuPresenter mPresenter;
+    @Inject
+     NewsTypeModel mModel;
 
     @Override
     protected int setLayoutRedID() {
@@ -67,11 +76,11 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
 
     @Override
     protected void init() {
-        //初使化第一个页面newsFragment
+        AppComponent appComponent = ((AppApplication) getApplication()).getAppComponent();
+        DaggerLeftMenuComponent.builder().appComponent(appComponent).leftMenuModule(new LeftMenuModule(this))
+                .build().inject(this);
 
-        NewsTypeModel model = new NewsTypeModel();
-//        NewsTypePresenter newsTypePresenter = new NewsTypePresenter(model, this);
-        mPresenter = new LeftMenuPresenter(model, this);
+
         mPresenter.getLeftMenuTitle();
 
         initNewsDetailFragment();

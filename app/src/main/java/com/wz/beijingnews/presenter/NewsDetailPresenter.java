@@ -7,6 +7,8 @@ import com.wz.beijingnews.bean.TopNewsBean;
 import com.wz.beijingnews.common.model.NewsDetailModel;
 import com.wz.beijingnews.presenter.contract.NewsDetailContract;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -24,6 +26,7 @@ import io.reactivex.schedulers.Schedulers;
 public class NewsDetailPresenter extends BasePresenter<NewsDetailModel, NewsDetailContract.View> {
 
 
+    @Inject
     public NewsDetailPresenter(NewsDetailModel model, NewsDetailContract.View view) {
         super(model, view);
     }
