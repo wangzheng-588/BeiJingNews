@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.wz.beijingnews.AppApplication;
 import com.wz.beijingnews.R;
+import com.wz.beijingnews.di.component.AppComponent;
 import com.wz.beijingnews.ui.BaseView;
 
 import butterknife.ButterKnife;
@@ -116,10 +118,13 @@ public abstract class ProgressFragment extends Fragment implements BaseView {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRealContentView();
-
+        AppComponent appComponent = ((AppApplication)(getActivity().getApplication())).getAppComponent();
+        setupAppComponent(appComponent);
         init();
         initData();
     }
+
+    protected abstract void setupAppComponent(AppComponent appComponent);
 
     protected  void initData(){}
 
@@ -166,32 +171,6 @@ public abstract class ProgressFragment extends Fragment implements BaseView {
 
     public abstract int setLayout();
 
-/*
-    @Override
-    public void showLoading() {
-        showProgress();
-    }
-
-    @Override
-    public void showLoadMoreing() {
-        showProgress();
-    }
-
-    @Override
-    public void showEmptyData() {
-        showEmptyView();
-    }
-
-
-    @Override
-    public void dismissLoading() {
-        showContentView();
-    }
-
-    @Override
-    public void showError(String msg) {
-        showEmptyView(msg);
-    }*/
 
     @Override
     public void onDestroy() {
@@ -250,5 +229,6 @@ public abstract class ProgressFragment extends Fragment implements BaseView {
     protected boolean isFragmentVisible() {
         return isFragmentVisible;
     }
+
 
 }

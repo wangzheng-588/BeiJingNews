@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".ui.activity.GuideActivity">
         </activity>
+        <activity android:name=".ui.activity.NewsDetailActivity"/>
     </application>
 
 </manifest>

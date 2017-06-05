@@ -8,7 +8,6 @@ import android.text.TextUtils;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
-import com.wz.beijingnews.AppApplication;
 import com.wz.beijingnews.R;
 import com.wz.beijingnews.bean.NewsBean;
 import com.wz.beijingnews.bean.NewsDataBean;
@@ -76,13 +75,16 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
 
     }
 
-
     @Override
-    protected void init() {
-        AppComponent appComponent = ((AppApplication)(getActivity().getApplication())).getAppComponent();
+    protected void setupAppComponent(AppComponent appComponent) {
         DaggerNewsDetailListComponent.builder().appComponent(appComponent)
                 .newsDetailListModule(new NewsDetailListModule(this))
                 .build().inject(this);
+    }
+
+
+    @Override
+    protected void init() {
         if (!isLazyLoad) {
             mPresenter.requestDatas(mUrl);
         }

@@ -8,6 +8,8 @@ import com.wz.beijingnews.presenter.contract.NewsTypeContract;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -23,6 +25,8 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class NewsTypePresenter extends BasePresenter<NewsTypeModel,NewsTypeContract.View> {
+
+    @Inject
     public NewsTypePresenter(NewsTypeModel model, NewsTypeContract.View view) {
         super(model, view);
     }

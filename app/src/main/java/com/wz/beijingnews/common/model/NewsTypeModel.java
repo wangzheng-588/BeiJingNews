@@ -4,7 +4,6 @@ import com.wz.beijingnews.bean.NewsTypeBaseBean;
 import com.wz.beijingnews.bean.NewsTypeChildBean;
 import com.wz.beijingnews.bean.NewsTypeDataBean;
 import com.wz.beijingnews.common.http.ApiService;
-import com.wz.beijingnews.common.http.HttpManager;
 
 import io.reactivex.Observable;
 
@@ -14,9 +13,15 @@ import io.reactivex.Observable;
 
 public class NewsTypeModel {
 
+    ApiService mApiService;
+
+    public NewsTypeModel(ApiService apiService) {
+        mApiService = apiService;
+    }
+
     public Observable<NewsTypeBaseBean<NewsTypeDataBean<NewsTypeChildBean>>> getNewsType(){
-        HttpManager manager = new HttpManager();
-        ApiService apiService = manager.getRetrofit(manager.getOkHttpClient()).create(ApiService.class);
-        return apiService.getNewsType();
+//        HttpManager manager = new HttpManager();
+//        ApiService apiService = manager.getRetrofit(manager.getOkHttpClient()).create(ApiService.class);
+        return mApiService.getNewsType();
     }
 }

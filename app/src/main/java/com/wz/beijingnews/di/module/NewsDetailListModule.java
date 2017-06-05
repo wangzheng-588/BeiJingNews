@@ -1,5 +1,6 @@
 package com.wz.beijingnews.di.module;
 
+import com.wz.beijingnews.common.http.ApiService;
 import com.wz.beijingnews.common.model.NewsDetailModel;
 import com.wz.beijingnews.presenter.contract.NewsDetailContract;
 
@@ -25,7 +26,7 @@ public class NewsDetailListModule {
     }
 
     @Provides
-    public NewsDetailModel provideModel(){
-        return new NewsDetailModel();
+    public NewsDetailModel provideModel(ApiService apiService){
+        return new NewsDetailModel(apiService);
     }
 }

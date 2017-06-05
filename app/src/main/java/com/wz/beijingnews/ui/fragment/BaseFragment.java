@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.wz.beijingnews.AppApplication;
+import com.wz.beijingnews.di.component.AppComponent;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -32,8 +35,12 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        AppComponent appComponent = ((AppApplication)(getActivity().getApplication())).getAppComponent();
+        setupAppComponent(appComponent);
         initData();
     }
+
+    protected abstract void setupAppComponent(AppComponent appComponent);
 
 
     protected void init(){}

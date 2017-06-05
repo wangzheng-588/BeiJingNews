@@ -1,5 +1,6 @@
 package com.wz.beijingnews.di.module;
 
+import com.wz.beijingnews.common.http.ApiService;
 import com.wz.beijingnews.common.model.NewsTypeModel;
 import com.wz.beijingnews.presenter.contract.LeftMenuContract;
 
@@ -18,11 +19,10 @@ public class LeftMenuModule {
         this.mView = view;
     }
 
-    //    NewsTypeModel model, LeftMenuContract.View view
 
     @Provides
-    public NewsTypeModel provideModel() {
-        return new NewsTypeModel();
+    public NewsTypeModel provideModel(ApiService apiService) {
+        return new NewsTypeModel(apiService);
     }
 
     @Provides

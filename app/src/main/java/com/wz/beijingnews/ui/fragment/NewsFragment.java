@@ -7,12 +7,17 @@ import android.support.v4.view.ViewPager;
 import com.wz.beijingnews.R;
 import com.wz.beijingnews.bean.NewsTypeChildBean;
 import com.wz.beijingnews.common.model.NewsTypeModel;
+import com.wz.beijingnews.di.component.AppComponent;
+import com.wz.beijingnews.di.component.DaggerNewsTypeComponent;
+import com.wz.beijingnews.di.module.NewsTypeModule;
 import com.wz.beijingnews.presenter.NewsTypePresenter;
 import com.wz.beijingnews.presenter.contract.NewsTypeContract;
 import com.wz.beijingnews.ui.adapter.NewsDetailFragmentAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -27,6 +32,11 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
     private NewsDetailFragmentAdapter mAdapter;
+    @Inject
+     NewsTypeModel mModel;
+    @Inject
+     NewsTypePresenter mNewsTypePresenter;
+
 
     @Override
     protected int setLayoutResID() {
@@ -34,11 +44,16 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
     }
 
     @Override
+    protected void setupAppComponent(AppComponent appComponent) {
+        DaggerNewsTypeComponent.builder().appComponent(appComponent)
+                .newsTypeModule(new NewsTypeModule(this)).build().inject(this);
+    }
+
+    @Override
     protected void initData() {
-        NewsTypeModel model = new NewsTypeModel();
-        NewsTypePresenter newsTypePresenter = new NewsTypePresenter(model, this);
-//        newsTypePresenter.requestDatas();
-        newsTypePresenter.getNewsTypeTitle();
+       // AppComponent appComponent = ((AppApplication)(getActivity().getApplication())).getAppComponent();
+
+        mNewsTypePresenter.getNewsTypeTitle();
 
     }
 

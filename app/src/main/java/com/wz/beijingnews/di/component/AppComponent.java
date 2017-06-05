@@ -1,5 +1,7 @@
 package com.wz.beijingnews.di.component;
 
+import com.wz.beijingnews.AppApplication;
+import com.wz.beijingnews.common.http.ApiService;
 import com.wz.beijingnews.di.module.AppModule;
 import com.wz.beijingnews.di.module.HttpModule;
 
@@ -16,5 +18,7 @@ import dagger.Component;
 @Singleton
 public interface AppComponent {
 
+    ApiService getApiService();
 
+    AppApplication getApplication();
 }

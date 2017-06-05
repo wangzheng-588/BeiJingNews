@@ -5,7 +5,6 @@ import com.wz.beijingnews.bean.NewsBean;
 import com.wz.beijingnews.bean.NewsDataBean;
 import com.wz.beijingnews.bean.TopNewsBean;
 import com.wz.beijingnews.common.http.ApiService;
-import com.wz.beijingnews.common.http.HttpManager;
 
 import io.reactivex.Observable;
 
@@ -15,15 +14,21 @@ import io.reactivex.Observable;
 
 public class NewsDetailModel {
 
+    ApiService mApiService;
+
+    public NewsDetailModel(ApiService apiService) {
+        mApiService = apiService;
+    }
+
     public Observable<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> getNewsDetail(String url){
-        HttpManager manager = new HttpManager();
-        ApiService apiService = manager.getRetrofit(manager.getOkHttpClient()).create(ApiService.class);
-        return apiService.getNewsDetail(url);
+        return mApiService.getNewsDetail(url);
     }
 
     public Observable<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> loadMoreNewsDetail(String url){
-        HttpManager manager = new HttpManager();
-        ApiService apiService = manager.getRetrofit(manager.getOkHttpClient()).create(ApiService.class);
-        return apiService.loadMoreNewsDetail(url);
+        return mApiService.loadMoreNewsDetail(url);
+    }
+
+    public Observable<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> getTopNewsDetail(String url){
+        return mApiService.getTopNewsDetail(url);
     }
 }

@@ -19,15 +19,8 @@ import retrofit2.http.Url;
 public interface ApiService {
 
 
-    /*@GET("static/api/news/categories.json")
-    Call<NewsTypeBaseBean<NewsTypeDataBean<NewsTypeChildBean>>> getNewsType();*/
-
     @GET("static/api/news/categories.json")
     Observable<NewsTypeBaseBean<NewsTypeDataBean<NewsTypeChildBean>>> getNewsType();
-
-   /* @GET
-    Call<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> getNewsDetail(@Url String url);
-*/
 
 
     @GET
@@ -36,4 +29,7 @@ public interface ApiService {
 
     @GET
     Observable<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> loadMoreNewsDetail(@Url String moreUrl);
+
+    @GET
+    Observable<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> getTopNewsDetail(@Url String topNewsUrl);
 }
