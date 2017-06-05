@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -61,8 +62,8 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
     private boolean isOpen;
     private Fragment preFragment;
     private int mPosition;
-    private ArrayList<Fragment> mFragments;
-    private List<Fragment> mNewsDetailFragments;
+    private ArrayList<Fragment> mFragments = null;
+    private List<Fragment> mNewsDetailFragments = null;
 
     @Inject
      LeftMenuPresenter mPresenter;
@@ -91,14 +92,6 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
         initRidaoGroup();
     }
 
-    private void initNewsDetailFragment() {
-        mNewsDetailFragments = new ArrayList<>();
-        mNewsDetailFragments.add(FragmentFactory.createFragment(0));
-        mNewsDetailFragments.add(FragmentFactory.createFragment(3));
-        mNewsDetailFragments.add(FragmentFactory.createFragment(4));
-        mNewsDetailFragments.add(FragmentFactory.createFragment(5));
-        mNewsDetailFragments.add(FragmentFactory.createFragment(6));
-    }
 
     private void initRidaoGroup() {
         mRgMain.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -123,7 +116,11 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
                         break;
                 }
                 Fragment fragment = mFragments.get(mPosition);
-                changeFragment(fragment);
+                if (fragment!=null){
+
+                    changeFragment(fragment);
+                }
+
             }
         });
 
@@ -173,6 +170,16 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
         mFragments.add(FragmentFactory.createFragment(1));
         mFragments.add(FragmentFactory.createFragment(2));
     }
+
+    private void initNewsDetailFragment() {
+        mNewsDetailFragments = new ArrayList<>();
+        mNewsDetailFragments.add(FragmentFactory.createFragment(0));
+        mNewsDetailFragments.add(FragmentFactory.createFragment(3));
+        mNewsDetailFragments.add(FragmentFactory.createFragment(4));
+        mNewsDetailFragments.add(FragmentFactory.createFragment(5));
+        mNewsDetailFragments.add(FragmentFactory.createFragment(6));
+    }
+
 
     private void changeFragment(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -234,7 +241,11 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
 
     private void changeNewsDetailFragment(int position) {
         Fragment fragment = mNewsDetailFragments.get(position);
-        changeFragment(fragment);
+        if (fragment!=null){
+
+            changeFragment(fragment);
+        }
+
     }
 
 
@@ -245,6 +256,14 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
 
     @Override
     public void showLeftMenuTitle(List<String> value) {
+        Log.e("TAG",value.size()+"");
         initLeftMenuTitle(value);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mFragments = null;
+        mNewsDetailFragments = null;
+        super.onDestroy();
     }
 }

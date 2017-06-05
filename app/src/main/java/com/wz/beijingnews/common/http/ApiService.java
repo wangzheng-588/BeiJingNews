@@ -6,6 +6,9 @@ import com.wz.beijingnews.bean.NewsDataBean;
 import com.wz.beijingnews.bean.NewsTypeBaseBean;
 import com.wz.beijingnews.bean.NewsTypeChildBean;
 import com.wz.beijingnews.bean.NewsTypeDataBean;
+import com.wz.beijingnews.bean.PhotosBaseBean;
+import com.wz.beijingnews.bean.PhotosDataBean;
+import com.wz.beijingnews.bean.PhotosNewsBean;
 import com.wz.beijingnews.bean.TopNewsBean;
 
 import io.reactivex.Observable;
@@ -32,4 +35,7 @@ public interface ApiService {
 
     @GET
     Observable<NewsBaseBean<NewsDataBean<NewsBean,TopNewsBean>>> getTopNewsDetail(@Url String topNewsUrl);
+
+    @GET
+    Observable<PhotosBaseBean<PhotosDataBean<PhotosNewsBean>>> getPhotos(@Url String url);
 }

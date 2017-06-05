@@ -51,8 +51,6 @@ public class NewsFragment extends BaseFragment implements NewsTypeContract.View 
 
     @Override
     protected void initData() {
-       // AppComponent appComponent = ((AppApplication)(getActivity().getApplication())).getAppComponent();
-
         mNewsTypePresenter.getNewsTypeTitle();
 
     }

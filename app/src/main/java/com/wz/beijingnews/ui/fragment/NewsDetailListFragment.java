@@ -252,15 +252,21 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
 
     @Override
     public void showLoadMoreData(NewsDataBean<NewsBean, TopNewsBean> data) {
-        mMoreUrl = data.getMore().substring(1);
+        mMoreUrl = data.getMore();
+        if (!TextUtils.isEmpty(mMoreUrl)){
+            mMoreUrl = mMoreUrl.substring(1);
+        }
         mAdapter.addDatas(data.getNews());
     }
 
     @Override
     protected void onFragmentFirstVisible() {
         if (isLazyLoad) {
-            mPresenter.requestDatas(mUrl);
-            mPresenter.getTopNewsDetail(mUrl);
+            if (!TextUtils.isEmpty(mUrl)){
+
+                mPresenter.requestDatas(mUrl);
+                mPresenter.getTopNewsDetail(mUrl);
+            }
         }
     }
 
