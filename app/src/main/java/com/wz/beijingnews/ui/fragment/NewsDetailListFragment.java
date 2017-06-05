@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -27,13 +28,18 @@ import com.wz.beijingnews.presenter.NewsDetailPresenter;
 import com.wz.beijingnews.presenter.contract.NewsDetailContract;
 import com.wz.beijingnews.ui.adapter.NewsDetailListAdapter1;
 import com.wz.beijingnews.ui.adapter.TopNewsAdapter;
-import com.youth.banner.Banner;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by wz on 17-6-2.
@@ -44,34 +50,29 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
-
+    @BindView(R.id.material_refresh_layout)
+    MaterialRefreshLayout mMaterialRefreshLayout;
 
     public static final String ARGUMENT = "argument";
     public static final String ISLAZYLOAD = "islazyload";
-
-    @BindView(R.id.material_refresh_layout)
-    MaterialRefreshLayout mMaterialRefreshLayout;
-//    @BindView(R.id.banner)
-//    Banner mBanner;
-
-
     private String mUrl;
     private NewsDetailListAdapter1 mAdapter;
     private String mMoreUrl;
     private boolean isLazyLoad = false;
+    private ViewPager mViewPager;
+    private TextView mTvTitle;
+    private LinearLayout mLlPointGray;
+    private TopNewsAdapter mTopNewsAdapter;
+    private int prePosition;
+    private Disposable mTag;
+    private int position;
 
     @Inject
     NewsDetailPresenter mPresenter;
     @Inject
     NewsDetailModel mNewsDetailModel;
+    private Observable<Long> mInterval;
 
-    private Banner mBanner;
-    private ViewPager mViewPager;
-    private TextView mTvTitle;
-    private LinearLayout mLlPointGray;
-    private TopNewsAdapter mTopNewsAdapter;
-    private ImageView mRedPoint;
-    private int prePosition;
 
     public static NewsDetailListFragment newInstance(String argument, boolean isLazyLoad) {
 
@@ -160,10 +161,8 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 mTopNewsAdapter.setTitle(mTvTitle, position);
                 for (int i = 0; i < mLlPointGray.getChildCount(); i++) {
-
                     mLlPointGray.getChildAt(prePosition).setBackgroundResource(R.drawable.topnews_bg_shape_gray);
-                   mLlPointGray.getChildAt(position).setBackgroundResource(R.drawable.topnews_bg_shape_red);
-
+                    mLlPointGray.getChildAt(position).setBackgroundResource(R.drawable.topnews_bg_shape_red);
                 }
 
                 prePosition = position;
@@ -177,6 +176,24 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+
+        mViewPager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_UP:
+                        autoPlay();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                    case MotionEvent.ACTION_DOWN:
+                        if (mTag!=null){
+                            mTag.dispose();
+                        }
+                        break;
+                }
+                return false;
             }
         });
     }
@@ -249,11 +266,35 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
 
     @Override
     protected void onFragmentVisibleChange(boolean isVisible) {
+        if (isVisible) {
+            autoPlay();
+        } else {
+            if (mTag != null) {
+                mTag.dispose();
+            }
+        }
 
+    }
+
+    private void autoPlay() {
+        mInterval = Observable.interval(3, TimeUnit.SECONDS);
+        mTag = mInterval.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>() {
+            @Override
+            public void accept(Long aLong) throws Exception {
+                if (position>mTopNewsAdapter.getSize()-1){
+                    position = 0;
+                }
+
+                mViewPager.setCurrentItem(position++);
+            }
+        });
     }
 
     @Override
     public void onDestroy() {
+        if (mTag != null) {
+            mTag.dispose();
+        }
         super.onDestroy();
     }
 

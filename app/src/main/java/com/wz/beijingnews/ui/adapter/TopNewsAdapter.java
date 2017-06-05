@@ -60,4 +60,9 @@ public class TopNewsAdapter extends PagerAdapter {
     public void setTitle(TextView view, int position){
         view.setText(mTopNewsBean.get(position).getTitle());
     }
+
+    public int getSize(){
+        return mTopNewsBean.size();
+
+    }
 }
