@@ -2,9 +2,16 @@ package com.wz.beijingnews.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
@@ -18,7 +25,11 @@ import com.wz.beijingnews.di.component.DaggerNewsDetailListComponent;
 import com.wz.beijingnews.di.module.NewsDetailListModule;
 import com.wz.beijingnews.presenter.NewsDetailPresenter;
 import com.wz.beijingnews.presenter.contract.NewsDetailContract;
-import com.wz.beijingnews.ui.adapter.NewsDetailListAdapter;
+import com.wz.beijingnews.ui.adapter.NewsDetailListAdapter1;
+import com.wz.beijingnews.ui.adapter.TopNewsAdapter;
+import com.youth.banner.Banner;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -40,15 +51,27 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
 
     @BindView(R.id.material_refresh_layout)
     MaterialRefreshLayout mMaterialRefreshLayout;
+//    @BindView(R.id.banner)
+//    Banner mBanner;
+
+
     private String mUrl;
-    private NewsDetailListAdapter mAdapter;
+    private NewsDetailListAdapter1 mAdapter;
     private String mMoreUrl;
     private boolean isLazyLoad = false;
 
     @Inject
     NewsDetailPresenter mPresenter;
     @Inject
-     NewsDetailModel mNewsDetailModel;
+    NewsDetailModel mNewsDetailModel;
+
+    private Banner mBanner;
+    private ViewPager mViewPager;
+    private TextView mTvTitle;
+    private LinearLayout mLlPointGray;
+    private TopNewsAdapter mTopNewsAdapter;
+    private ImageView mRedPoint;
+    private int prePosition;
 
     public static NewsDetailListFragment newInstance(String argument, boolean isLazyLoad) {
 
@@ -87,15 +110,28 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
     protected void init() {
         if (!isLazyLoad) {
             mPresenter.requestDatas(mUrl);
+            mPresenter.getTopNewsDetail(mUrl);
         }
 
-        mAdapter = new NewsDetailListAdapter(getActivity());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mAdapter);
 
+        //新闻数据列表
+        // mAdapter = new NewsDetailListAdapter(getActivity());
+        mAdapter = new NewsDetailListAdapter1(getActivity());
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // mBanner = new Banner(getActivity());
+
+        mRecyclerView.setAdapter(mAdapter);
+        View header = LayoutInflater.from(mContext).inflate(R.layout.header, mRecyclerView, false);
+        mTvTitle = (TextView) header.findViewById(R.id.tv_title);
+        mLlPointGray = (LinearLayout) header.findViewById(R.id.ll_point_gray);
+        mViewPager = (ViewPager) header.findViewById(R.id.view_pager);
+
+        mAdapter.setHeaderView(header);
         mMaterialRefreshLayout.setLoadMore(true);
+
         initListener();
     }
+
 
     @Override
     public int setLayout() {
@@ -107,6 +143,7 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
             @Override
             public void onRefresh(MaterialRefreshLayout materialRefreshLayout) {
                 mPresenter.requestDatas(mUrl);
+                mPresenter.getTopNewsDetail(mUrl);
             }
 
             @Override
@@ -114,6 +151,31 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
                 if (!TextUtils.isEmpty(mMoreUrl)) {
                     mPresenter.loadMoreDatas(mMoreUrl);
                 }
+
+            }
+        });
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                mTopNewsAdapter.setTitle(mTvTitle, position);
+                for (int i = 0; i < mLlPointGray.getChildCount(); i++) {
+
+                    mLlPointGray.getChildAt(prePosition).setBackgroundResource(R.drawable.topnews_bg_shape_gray);
+                   mLlPointGray.getChildAt(position).setBackgroundResource(R.drawable.topnews_bg_shape_red);
+
+                }
+
+                prePosition = position;
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
 
             }
         });
@@ -133,9 +195,29 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
     }
 
     @Override
+    public void showTopNews(List<TopNewsBean> value) {
+        mLlPointGray.removeAllViews();
+        for (int i = 0; i < value.size(); i++) {
+
+            ImageView imageView = new ImageView(mContext);
+            imageView.setImageResource(R.drawable.topnews_bg_shape_gray);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.leftMargin = 5;
+            imageView.setLayoutParams(params);
+            mLlPointGray.addView(imageView);
+        }
+        mTopNewsAdapter = new TopNewsAdapter(mContext);
+        mTopNewsAdapter.setData(value);
+        mViewPager.setAdapter(mTopNewsAdapter);
+
+
+    }
+
+    @Override
     public void showResult(NewsDataBean<NewsBean, TopNewsBean> data) {
         mMoreUrl = data.getMore().substring(1);
-        mAdapter.setNewsBeen(data.getNews());
+        mAdapter.setDatas(data.getNews());
+
     }
 
     @Override
@@ -144,8 +226,8 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
     }
 
     @Override
-    public void showError() {
-        showEmptyView("未知错误");
+    public void showError(String msg) {
+        showEmptyView(msg);
         mMaterialRefreshLayout.finishRefreshLoadMore();
         mMaterialRefreshLayout.finishRefresh();
 
@@ -154,13 +236,26 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
     @Override
     public void showLoadMoreData(NewsDataBean<NewsBean, TopNewsBean> data) {
         mMoreUrl = data.getMore().substring(1);
-        mAdapter.addNewsBeen(data.getNews());
+        mAdapter.addDatas(data.getNews());
     }
 
     @Override
     protected void onFragmentFirstVisible() {
         if (isLazyLoad) {
             mPresenter.requestDatas(mUrl);
+            mPresenter.getTopNewsDetail(mUrl);
         }
     }
+
+    @Override
+    protected void onFragmentVisibleChange(boolean isVisible) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+
 }

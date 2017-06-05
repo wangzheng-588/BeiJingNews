@@ -7,4 +7,5 @@ package com.wz.beijingnews.ui;
 public interface BaseView {
 
 
+
 }

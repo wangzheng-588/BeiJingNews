@@ -20,8 +20,6 @@ public class NewsTypeModel {
     }
 
     public Observable<NewsTypeBaseBean<NewsTypeDataBean<NewsTypeChildBean>>> getNewsType(){
-//        HttpManager manager = new HttpManager();
-//        ApiService apiService = manager.getRetrofit(manager.getOkHttpClient()).create(ApiService.class);
         return mApiService.getNewsType();
     }
 }

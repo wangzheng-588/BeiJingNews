@@ -7,6 +7,8 @@ import com.wz.beijingnews.bean.TopNewsBean;
 import com.wz.beijingnews.common.model.NewsDetailModel;
 import com.wz.beijingnews.presenter.contract.NewsDetailContract;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -32,7 +34,7 @@ public class NewsDetailPresenter extends BasePresenter<NewsDetailModel, NewsDeta
     }
 
     public void requestDatas(String url) {
-        mView.showLoading();
+       // mView.showLoading();
 
         mModel.getNewsDetail(url).compose(new ObservableTransformer<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>, NewsDataBean<NewsBean, TopNewsBean>>() {
             @Override
@@ -62,7 +64,7 @@ public class NewsDetailPresenter extends BasePresenter<NewsDetailModel, NewsDeta
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.showError();
+                        mView.showError(e.getMessage());
                     }
 
                     @Override
@@ -74,7 +76,7 @@ public class NewsDetailPresenter extends BasePresenter<NewsDetailModel, NewsDeta
     }
 
     public void loadMoreDatas(String moreUrl) {
-        mView.showLoading();
+      //  mView.showLoading();
 
 
         mModel.loadMoreNewsDetail(moreUrl).compose(new ObservableTransformer<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>, NewsDataBean<NewsBean, TopNewsBean>>() {
@@ -105,7 +107,7 @@ public class NewsDetailPresenter extends BasePresenter<NewsDetailModel, NewsDeta
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.showError();
+                        mView.showError(e.getMessage());
                     }
 
                     @Override
@@ -114,6 +116,47 @@ public class NewsDetailPresenter extends BasePresenter<NewsDetailModel, NewsDeta
                     }
                 });
 
+    }
+
+    public void getTopNewsDetail(String topNewsUrl) {
+        mModel.getTopNewsDetail(topNewsUrl)
+                .compose(new ObservableTransformer<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>, List<TopNewsBean>>() {
+                    @Override
+                    public ObservableSource<List<TopNewsBean>> apply(Observable<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>> upstream) {
+                        return upstream.flatMap(new Function<NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>>, ObservableSource<List<TopNewsBean>>>() {
+                            @Override
+                            public ObservableSource<List<TopNewsBean>> apply(final NewsBaseBean<NewsDataBean<NewsBean, TopNewsBean>> newsDataBeanNewsBaseBean) throws Exception {
+                                return Observable.create(new ObservableOnSubscribe<List<TopNewsBean>>() {
+                                    @Override
+                                    public void subscribe(ObservableEmitter<List<TopNewsBean>> e) throws Exception {
+                                        if (newsDataBeanNewsBaseBean.getRetcode() == 200) {
+                                            List<TopNewsBean> topnews = newsDataBeanNewsBaseBean.getData().getTopnews();
+                                            e.onNext(topnews);
+                                            e.onComplete();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultObserver<List<TopNewsBean>>() {
+                    @Override
+                    public void onNext(List<TopNewsBean> value) {
+                        mView.showTopNews(value);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.showError(e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
 }
