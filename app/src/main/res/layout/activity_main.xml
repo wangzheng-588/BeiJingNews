@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
 
             android:layout_width="match_parent"
             android:layout_height="45dp"
@@ -27,9 +27,15 @@
                 android:background="@drawable/vector_drawable_menu"/>
 
 
+            <ImageView
+                android:id="@+id/iv_photos_type"
+                android:layout_marginRight="5dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/icon_pic_grid_type"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
 
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <android.support.v4.widget.DrawerLayout
             android:id="@+id/drawer_layout"

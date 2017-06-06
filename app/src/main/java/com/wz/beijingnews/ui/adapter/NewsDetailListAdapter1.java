@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.wz.beijingnews.R;
 import com.wz.beijingnews.bean.NewsBean;
 import com.wz.beijingnews.common.Constacts;
+import com.wz.beijingnews.common.utils.SPUtil;
 import com.wz.beijingnews.ui.activity.NewsDetailActivity;
 
 import butterknife.BindView;
@@ -42,12 +43,30 @@ public class NewsDetailListAdapter1 extends BaseRecyclerAdapter<NewsBean> {
             ((MyViewHolder)holder).mTvTime.setText(newsBean.getPubdate());
             Glide.with(mContext).load(Constacts.BASE_URL + newsBean.getListimage()).error(R.mipmap.news_pic_default).into(((MyViewHolder)holder).mIvIcon);
 
+            String read_id = SPUtil.getString(mContext, "READ_ID", "");
+            if (read_id.contains(newsBean.getId()+"")){
+                ((MyViewHolder) holder).mTvTitle.setTextColor(mContext.getResources().getColor(R.color.gray));
+            } else {
+                ((MyViewHolder) holder).mTvTitle.setTextColor(mContext.getResources().getColor(R.color.black));
+
+
+            }
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext,NewsDetailActivity.class);
                     intent.putExtra("newsUrl",newsBean.getUrl());
                     mContext.startActivity(intent);
+
+                    String read_id = SPUtil.getString(mContext, "READ_ID", "");
+                    if (!read_id.contains(newsBean.getId()+"")){
+                        read_id = read_id+newsBean.getId()+",";
+                        SPUtil.putString(mContext,"READ_ID",read_id);
+                        notifyItemChanged(RealPosition+1);
+                    }
+
+
                 }
             });
         }

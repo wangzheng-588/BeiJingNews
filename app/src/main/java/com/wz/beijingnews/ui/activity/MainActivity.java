@@ -55,6 +55,8 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
     RadioGroup mRgMain;
     @BindView(R.id.list_view)
     ListView mListView;
+    @BindView(R.id.iv_photos_type)
+    ImageView mIvPhotosType;
 
     private int prePosition;
 
@@ -89,8 +91,27 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
 
         initDrawerLayout();
         initRidaoGroup();
+
+        mIvPhotosType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPhotosTypeClickListener!=null){
+                    mPhotosTypeClickListener.setPhotosTypeClickListener(v);
+                }
+            }
+        });
     }
 
+
+    PhotosTypeClickListener mPhotosTypeClickListener;
+
+    public void setPhotosTypeClickListener(PhotosTypeClickListener photosTypeClickListener) {
+        mPhotosTypeClickListener = photosTypeClickListener;
+    }
+
+    public interface PhotosTypeClickListener{
+        void setPhotosTypeClickListener(View view);
+    }
 
     private void initRidaoGroup() {
         mRgMain.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -102,16 +123,19 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
                         mIvMenu.setVisibility(View.VISIBLE);
                         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                         mPosition = 0;
+                        mIvPhotosType.setVisibility(View.GONE);
                         break;
                     case R.id.rb_video:
                         mIvMenu.setVisibility(View.GONE);
                         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                         mPosition = 1;
+                        mIvPhotosType.setVisibility(View.GONE);
                         break;
                     case R.id.rb_me:
                         mPosition = 2;
                         mIvMenu.setVisibility(View.GONE);
                         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                        mIvPhotosType.setVisibility(View.GONE);
                         break;
                 }
                 Fragment fragment = mFragments.get(mPosition);
@@ -239,9 +263,13 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
     }
 
     private void changeNewsDetailFragment(int position) {
+        if (position!=2){
+            mIvPhotosType.setVisibility(View.GONE);
+        } else {
+            mIvPhotosType.setVisibility(View.VISIBLE);
+        }
         Fragment fragment = mNewsDetailFragments.get(position);
         if (fragment!=null){
-
             changeFragment(fragment);
         }
 

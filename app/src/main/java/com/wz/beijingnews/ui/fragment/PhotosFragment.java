@@ -1,7 +1,9 @@
 package com.wz.beijingnews.ui.fragment;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
@@ -13,6 +15,7 @@ import com.wz.beijingnews.di.component.DaggerPhotosComponent;
 import com.wz.beijingnews.di.module.PhotosModule;
 import com.wz.beijingnews.presenter.PhotosPresenter;
 import com.wz.beijingnews.presenter.contract.PhotoContract;
+import com.wz.beijingnews.ui.activity.MainActivity;
 import com.wz.beijingnews.ui.adapter.PhotosAdapter;
 
 import javax.inject.Inject;
@@ -23,7 +26,7 @@ import butterknife.BindView;
  * Created by wz on 17-6-2.
  */
 
-public class PhotosFragment extends ProgressFragment implements PhotoContract.View {
+public class PhotosFragment extends ProgressFragment implements PhotoContract.View,MainActivity.PhotosTypeClickListener {
 
     @Inject
     PhotosPresenter mPresenter;
@@ -36,6 +39,7 @@ public class PhotosFragment extends ProgressFragment implements PhotoContract.Vi
 
     private PhotosAdapter mAdapter;
     private String mPhotosMoreUrl;
+    private boolean isGridPhotos;
 
 
     @Override
@@ -68,6 +72,8 @@ public class PhotosFragment extends ProgressFragment implements PhotoContract.Vi
                mPresenter.getMorePhotos(mPhotosMoreUrl.substring(1));
             }
         });
+
+        ((MainActivity)getActivity()).setPhotosTypeClickListener(this);
     }
 
     @Override
@@ -105,4 +111,18 @@ public class PhotosFragment extends ProgressFragment implements PhotoContract.Vi
         mMaterialRefresh.finishRefreshLoadMore();
     }
 
+    @Override
+    public void setPhotosTypeClickListener(View view) {
+
+        if (isGridPhotos){
+            view.setBackgroundResource(R.drawable.icon_pic_grid_type);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+            isGridPhotos = false;
+        } else {
+
+            view.setBackgroundResource(R.drawable.icon_pic_list_type);
+            mRecyclerView.setLayoutManager(new GridLayoutManager(mContext,2));
+            isGridPhotos = true;
+        }
+    }
 }
