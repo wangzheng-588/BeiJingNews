@@ -22,4 +22,6 @@ public class PhotosModel {
     public Observable<PhotosBaseBean<PhotosDataBean<PhotosNewsBean>>> getPhotos(String url) {
         return mApiService.getPhotos(url);
     }
+
+
 }

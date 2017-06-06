@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -256,7 +255,7 @@ public class MainActivity extends BaseActivity implements LeftMenuContract.View 
 
     @Override
     public void showLeftMenuTitle(List<String> value) {
-        Log.e("TAG",value.size()+"");
+
         initLeftMenuTitle(value);
     }
 

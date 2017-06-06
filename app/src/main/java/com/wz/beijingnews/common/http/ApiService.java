@@ -38,4 +38,6 @@ public interface ApiService {
 
     @GET
     Observable<PhotosBaseBean<PhotosDataBean<PhotosNewsBean>>> getPhotos(@Url String url);
+
+
 }

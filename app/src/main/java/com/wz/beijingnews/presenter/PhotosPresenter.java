@@ -14,8 +14,8 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.observers.DefaultObserver;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -48,11 +48,63 @@ public class PhotosPresenter extends BasePresenter<PhotosModel,PhotoContract.Vie
             }
         }).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<PhotosDataBean<PhotosNewsBean>>() {
+        .subscribe(new DefaultObserver<PhotosDataBean<PhotosNewsBean>>() {
             @Override
-            public void accept(PhotosDataBean<PhotosNewsBean> photosNewsBeanPhotosDataBean) throws Exception {
-                mView.showPhotos(photosNewsBeanPhotosDataBean);
+            public void onNext(PhotosDataBean<PhotosNewsBean> value) {
+                mView.showPhotos(value);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mView.showError(e.getMessage());
+                mView.dismissLoading();
+            }
+
+            @Override
+            public void onComplete() {
+                mView.dismissLoading();
             }
         });
+    }
+
+
+
+    public void getMorePhotos(String url){
+        mModel.getPhotos(url).compose(new ObservableTransformer<PhotosBaseBean<PhotosDataBean<PhotosNewsBean>>, PhotosDataBean<PhotosNewsBean>>() {
+            @Override
+            public ObservableSource<PhotosDataBean<PhotosNewsBean>> apply(Observable<PhotosBaseBean<PhotosDataBean<PhotosNewsBean>>> upstream) {
+                return upstream.flatMap(new Function<PhotosBaseBean<PhotosDataBean<PhotosNewsBean>>, ObservableSource<PhotosDataBean<PhotosNewsBean>>>() {
+                    @Override
+                    public ObservableSource<PhotosDataBean<PhotosNewsBean>> apply(final PhotosBaseBean<PhotosDataBean<PhotosNewsBean>> photosDataBeanPhotosBaseBean) throws Exception {
+                        return Observable.create(new ObservableOnSubscribe<PhotosDataBean<PhotosNewsBean>>() {
+                            @Override
+                            public void subscribe(ObservableEmitter<PhotosDataBean<PhotosNewsBean>> e) throws Exception {
+                                PhotosDataBean<PhotosNewsBean> data = photosDataBeanPhotosBaseBean.getData();
+                                e.onNext(data);
+                                e.onComplete();
+                            }
+                        });
+                    }
+                });
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultObserver<PhotosDataBean<PhotosNewsBean>>() {
+                    @Override
+                    public void onNext(PhotosDataBean<PhotosNewsBean> value) {
+                        mView.showMorePhotos(value);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.showError(e.getMessage());
+                        mView.dismissLoading();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        mView.dismissLoading();
+                    }
+                });
     }
 }

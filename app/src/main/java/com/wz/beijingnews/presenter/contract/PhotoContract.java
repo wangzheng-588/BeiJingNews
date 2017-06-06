@@ -13,5 +13,15 @@ public interface PhotoContract {
     interface View extends BaseView{
 
         void showPhotos(PhotosDataBean<PhotosNewsBean> value);
+
+        void showMorePhotos(PhotosDataBean<PhotosNewsBean> value);
+
+
+        void showError(String msg);
+
+        void showLoading();
+
+        void dismissLoading();
+
     }
 }
