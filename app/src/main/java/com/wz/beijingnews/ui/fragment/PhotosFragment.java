@@ -18,6 +18,8 @@ import com.wz.beijingnews.presenter.contract.PhotoContract;
 import com.wz.beijingnews.ui.activity.MainActivity;
 import com.wz.beijingnews.ui.adapter.PhotosAdapter;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -85,7 +87,7 @@ public class PhotosFragment extends ProgressFragment implements PhotoContract.Vi
     @Override
     public void showPhotos(PhotosDataBean<PhotosNewsBean> value) {
         mPhotosMoreUrl = value.getMore();
-        mAdapter.setPhotosNewsBeen(value.getNews());
+        mAdapter.setPhotosNewsBeen((ArrayList<PhotosNewsBean>) value.getNews());
 
     }
 
@@ -117,11 +119,13 @@ public class PhotosFragment extends ProgressFragment implements PhotoContract.Vi
         if (isGridPhotos){
             view.setBackgroundResource(R.drawable.icon_pic_grid_type);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+            mAdapter.notifyDataSetChanged();
             isGridPhotos = false;
         } else {
 
             view.setBackgroundResource(R.drawable.icon_pic_list_type);
             mRecyclerView.setLayoutManager(new GridLayoutManager(mContext,2));
+            mAdapter.notifyDataSetChanged();
             isGridPhotos = true;
         }
     }

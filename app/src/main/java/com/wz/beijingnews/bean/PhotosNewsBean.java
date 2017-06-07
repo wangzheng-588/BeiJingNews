@@ -1,10 +1,12 @@
 package com.wz.beijingnews.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by wz on 17-6-5.
  */
 
-public class PhotosNewsBean {
+public class PhotosNewsBean implements Serializable{
 
 
     /**

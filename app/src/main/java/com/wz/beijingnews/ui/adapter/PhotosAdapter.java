@@ -1,6 +1,8 @@
 package com.wz.beijingnews.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +19,9 @@ import com.wz.beijingnews.R;
 import com.wz.beijingnews.bean.PhotosDataBean;
 import com.wz.beijingnews.bean.PhotosNewsBean;
 import com.wz.beijingnews.common.Constacts;
+import com.wz.beijingnews.ui.activity.PhotoViewActivity;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,13 +33,13 @@ import butterknife.ButterKnife;
 public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder>{
 
     private final Context mContext;
-    private List<PhotosNewsBean> mPhotosNewsBeen;
+    private ArrayList<PhotosNewsBean> mPhotosNewsBeen;
 
     public PhotosAdapter(Context context) {
         this.mContext = context;
     }
 
-    public void setPhotosNewsBeen(List<PhotosNewsBean> photosNewsBeen) {
+    public void setPhotosNewsBeen(ArrayList<PhotosNewsBean> photosNewsBeen) {
         mPhotosNewsBeen = photosNewsBeen;
         notifyDataSetChanged();
     }
@@ -53,16 +56,13 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         holder.mTvTitle.setText(title);
         String largeimageUrl = photosNewsBean.getLargeimage().substring(1);
         largeimageUrl = Constacts.BASE_URL+largeimageUrl;
-        //Log.e("TAGB",largeimageUrl);
 
-
+//
         Glide.with(mContext).load(largeimageUrl)
                .placeholder(R.mipmap.news_pic_default)
                 .into(holder.mImageView);
 
-       // Picasso.with(mContext).load(largeimageUrl)
-         //       .into(holder.mImageView);
-      //  loadIntoUseFitWidth(mContext, largeimageUrl, R.mipmap.news_pic_default, holder.mImageView);
+      // loadIntoUseFitWidth(mContext, largeimageUrl, R.mipmap.news_pic_default, holder.mImageView);
     }
 
     @Override
@@ -84,6 +84,20 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String listimage = mPhotosNewsBeen.get(getLayoutPosition()).getListimage();
+                    Intent intent = new Intent(mContext,PhotoViewActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("photos",mPhotosNewsBeen);
+                    bundle.putInt("position",getLayoutPosition());
+                   // bundle.putString("listImage",listimage);
+                    intent.putExtras(bundle);
+                    mContext.startActivity(intent);
+                }
+            });
         }
     }
 

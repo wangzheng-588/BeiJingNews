@@ -46,4 +46,5 @@ dependencies {
     //banner
     compile 'com.youth.banner:banner:1.4.9'
     compile 'co.roverlabs:picasso:2.5.2'
+    compile 'com.github.chrisbanes.photoview:library:1.2.4'
 }

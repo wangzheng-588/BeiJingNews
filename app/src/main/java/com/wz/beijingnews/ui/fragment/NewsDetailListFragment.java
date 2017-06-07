@@ -109,6 +109,7 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
 
     @Override
     protected void init() {
+
         if (!isLazyLoad) {
             mPresenter.requestDatas(mUrl);
             mPresenter.getTopNewsDetail(mUrl);
@@ -131,6 +132,7 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
         mMaterialRefreshLayout.setLoadMore(true);
 
         initListener();
+
     }
 
 
@@ -175,7 +177,15 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                switch (state){
+                    case ViewPager.SCROLL_STATE_DRAGGING:
+                        break;
+                    case ViewPager.SCROLL_STATE_IDLE:
+                        //autoPlay();
+                        break;
+                    case ViewPager.SCROLL_STATE_SETTLING:
+                        break;
+                }
             }
         });
 
