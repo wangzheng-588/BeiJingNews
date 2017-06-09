@@ -15,11 +15,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wz.beijingnews.R;
 import com.wz.beijingnews.bean.PhotosDataBean;
 import com.wz.beijingnews.bean.PhotosNewsBean;
 import com.wz.beijingnews.common.Constacts;
-import com.wz.beijingnews.common.utils.glide.GlideRoundTransform;
+import com.wz.beijingnews.common.utils.imageloader.ImageLoaderUtilsCircle;
 import com.wz.beijingnews.ui.activity.PhotoViewActivity;
 
 import java.util.ArrayList;
@@ -59,10 +60,13 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         largeimageUrl = Constacts.BASE_URL+largeimageUrl;
 
 
-        Glide.with(mContext).load(largeimageUrl)
-                .transform(new GlideRoundTransform(mContext,20))
-               .placeholder(R.mipmap.news_pic_default)
-                .into(holder.mImageView);
+        //使用glide圆角图片加载
+//        Glide.with(mContext).load(largeimageUrl)
+//                .transform(new GlideRoundTransform(mContext,20))
+//               .placeholder(R.mipmap.news_pic_default)
+//                .into(holder.mImageView);
+
+        ImageLoader.getInstance().displayImage(largeimageUrl, holder.mImageView , ImageLoaderUtilsCircle.MyDisplayImageOptions());
 
 
 //
