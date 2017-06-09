@@ -4,15 +4,14 @@
               android:gravity="center"
               android:padding="5dp"
               android:layout_margin="5dp"
-              android:background="@drawable/photos_bg"
+
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/iv_photos_icon"
         android:layout_width="match_parent"
         android:scaleType="fitXY"
-        android:background="@mipmap/news_pic_default"
-        android:layout_height="wrap_content"/>
+        android:layout_height="220dp"/>
     <TextView
         android:gravity="center"
         android:id="@+id/tv_title"

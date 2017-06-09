@@ -8,6 +8,8 @@ import com.wz.beijingnews.di.component.DaggerAppComponent;
 import com.wz.beijingnews.di.module.AppModule;
 import com.wz.beijingnews.di.module.HttpModule;
 
+import cn.sharesdk.framework.ShareSDK;
+
 /**
  * Created by wz on 17-6-2.
  */
@@ -27,6 +29,8 @@ public class AppApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        ShareSDK.initSDK(this);
         mAppComponent = DaggerAppComponent.builder().appModule(new AppModule((AppApplication)getApplicationContext()))
                 .httpModule(new HttpModule()).build();
     }

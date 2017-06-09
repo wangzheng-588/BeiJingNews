@@ -19,7 +19,7 @@ import com.wz.beijingnews.R;
 import com.wz.beijingnews.bean.PhotosDataBean;
 import com.wz.beijingnews.bean.PhotosNewsBean;
 import com.wz.beijingnews.common.Constacts;
-import com.wz.beijingnews.common.utils.rximageload.Loader.RxImageLoader;
+import com.wz.beijingnews.common.utils.glide.GlideRoundTransform;
 import com.wz.beijingnews.ui.activity.PhotoViewActivity;
 
 import java.util.ArrayList;
@@ -60,13 +60,14 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
 
         Glide.with(mContext).load(largeimageUrl)
+                .transform(new GlideRoundTransform(mContext,20))
                .placeholder(R.mipmap.news_pic_default)
                 .into(holder.mImageView);
 
 
-
-        RxImageLoader.with(mContext).load(largeimageUrl)
-                .into(holder.mImageView);
+//
+//        RxImageLoader.with(mContext).load(largeimageUrl)
+//                .into(holder.mImageView);
 
       // loadIntoUseFitWidth(mContext, largeimageUrl, R.mipmap.news_pic_default, holder.mImageView);
     }
@@ -137,4 +138,11 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                 .error(errorImageId)
                 .into(imageView);
     }
+
+
+
+
+
+
+
 }
