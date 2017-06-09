@@ -3,6 +3,7 @@ package com.wz.beijingnews;
 import android.app.Application;
 import android.content.Context;
 
+import com.wz.beijingnews.common.exception.CrashHandler;
 import com.wz.beijingnews.di.component.AppComponent;
 import com.wz.beijingnews.di.component.DaggerAppComponent;
 import com.wz.beijingnews.di.module.AppModule;
@@ -31,6 +32,8 @@ public class AppApplication extends Application {
         super.onCreate();
 
         ShareSDK.initSDK(this);
+        CrashHandler.getInstance().init(this);
+
         mAppComponent = DaggerAppComponent.builder().appModule(new AppModule((AppApplication)getApplicationContext()))
                 .httpModule(new HttpModule()).build();
     }
