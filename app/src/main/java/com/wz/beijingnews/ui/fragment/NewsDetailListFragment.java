@@ -293,17 +293,20 @@ public class NewsDetailListFragment extends ProgressFragment implements NewsDeta
     }
 
     private void autoPlay() {
-        mInterval = Observable.interval(3, TimeUnit.SECONDS);
-        mTag = mInterval.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>() {
-            @Override
-            public void accept(Long aLong) throws Exception {
-                if (position>mTopNewsAdapter.getSize()-1){
-                    position = 0;
-                }
+        if (mTopNewsAdapter!=null){
 
-                mViewPager.setCurrentItem(position++);
-            }
-        });
+            mInterval = Observable.interval(3, TimeUnit.SECONDS);
+            mTag = mInterval.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>() {
+                @Override
+                public void accept(Long aLong) throws Exception {
+                    if (position>mTopNewsAdapter.getSize()-1){
+                        position = 0;
+                    }
+
+                    mViewPager.setCurrentItem(position++);
+                }
+            });
+        }
     }
 
     @Override

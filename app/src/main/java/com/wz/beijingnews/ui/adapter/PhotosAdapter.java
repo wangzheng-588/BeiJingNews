@@ -19,6 +19,7 @@ import com.wz.beijingnews.R;
 import com.wz.beijingnews.bean.PhotosDataBean;
 import com.wz.beijingnews.bean.PhotosNewsBean;
 import com.wz.beijingnews.common.Constacts;
+import com.wz.beijingnews.common.utils.rximageload.Loader.RxImageLoader;
 import com.wz.beijingnews.ui.activity.PhotoViewActivity;
 
 import java.util.ArrayList;
@@ -57,9 +58,14 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         String largeimageUrl = photosNewsBean.getLargeimage().substring(1);
         largeimageUrl = Constacts.BASE_URL+largeimageUrl;
 
-//
+
         Glide.with(mContext).load(largeimageUrl)
                .placeholder(R.mipmap.news_pic_default)
+                .into(holder.mImageView);
+
+
+
+        RxImageLoader.with(mContext).load(largeimageUrl)
                 .into(holder.mImageView);
 
       // loadIntoUseFitWidth(mContext, largeimageUrl, R.mipmap.news_pic_default, holder.mImageView);
@@ -88,12 +94,10 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String listimage = mPhotosNewsBeen.get(getLayoutPosition()).getListimage();
                     Intent intent = new Intent(mContext,PhotoViewActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("photos",mPhotosNewsBeen);
                     bundle.putInt("position",getLayoutPosition());
-                   // bundle.putString("listImage",listimage);
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
                 }
