@@ -55,6 +55,9 @@ public class SearchFileActivity extends BaseActivity {
     @Override
     protected void init() {
 
+
+
+
         mRecyclerViewCatalog.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new CatalogAdapter();
         File storageDirectory = Environment.getExternalStorageDirectory();
