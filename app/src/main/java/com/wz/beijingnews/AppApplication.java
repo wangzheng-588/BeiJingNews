@@ -5,7 +5,6 @@ import android.content.Context;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.wz.beijingnews.common.exception.CrashHandler;
 import com.wz.beijingnews.di.component.AppComponent;
 import com.wz.beijingnews.di.component.DaggerAppComponent;
 import com.wz.beijingnews.di.module.AppModule;
@@ -36,7 +35,7 @@ public class AppApplication extends Application {
         ShareSDK.initSDK(this);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
-        CrashHandler.getInstance().init(this);
+        //CrashHandler.getInstance().init(this);
 
         mAppComponent = DaggerAppComponent.builder().appModule(new AppModule((AppApplication)getApplicationContext()))
                 .httpModule(new HttpModule()).build();

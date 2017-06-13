@@ -94,4 +94,6 @@ dependencies {
     compile files('libs/ShareSDK-YouDao-2.8.3.jar')
     compile files('libs/ShareSDK-Youtube-2.8.3.jar')
     compile project(':library')
+
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.18'
 }

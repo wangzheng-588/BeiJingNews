@@ -27,7 +27,7 @@
         </activity>
         <activity android:name=".ui.activity.NewsDetailActivity"/>
         <activity android:name=".ui.activity.PhotoViewActivity"/>
-
+        <activity android:name=".ui.activity.SearchFileActivity"/>
 
 
         <activity
